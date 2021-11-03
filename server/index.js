@@ -36,6 +36,24 @@ app.post('/api/create-game', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.post('/api/join-game', (req, res, next) => {
+  const { name, gameId } = req.body;
+  const roundScore = 0;
+  const gameScore = 0;
+  const sql = `
+    insert into "players" ("name", "gameId", "roundScore", "gameScore")
+    values ($1, $2, $3, $4)
+    returning *
+    `;
+  const params = [name, gameId, roundScore, gameScore];
+  db.query(sql, params)
+    .then(result => {
+      const [player] = result.rows;
+      res.status(201).json(player);
+    })
+    .catch(err => next(err));
+});
+
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`express server listening on port ${process.env.PORT}`);

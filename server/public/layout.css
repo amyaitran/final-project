@@ -1,3 +1,21 @@
+.container {
+  max-width: 260px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+}
+
+.col-full {
+  width: 100%;
+}
+
+.col-six-tenths {
+  width: 60%;
+}
+
 .text-align-center {
   text-align: center;
 }
@@ -7,4 +25,12 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+.ml-15 {
+  margin-left: 1.5rem;
 }

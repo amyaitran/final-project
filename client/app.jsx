@@ -1,5 +1,6 @@
 import React from 'react';
-import Home from './pages/home';
+import Home from './pages/dt-home';
+import Mobile from './pages/mb-home';
 import parseRoute from './lib/parse-route';
 
 export default class App extends React.Component {
@@ -10,7 +11,17 @@ export default class App extends React.Component {
     };
   }
 
+  renderPage() {
+    const { path } = this.state.route;
+    if (path === '') {
+      return <Home />;
+    }
+    if (path === 'mobile') {
+      return <Mobile />;
+    }
+  }
+
   render() {
-    return <Home />;
+    return this.renderPage();
   }
 }
