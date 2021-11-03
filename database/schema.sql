@@ -6,7 +6,7 @@ drop schema "public" cascade;
 
 create schema "public";
 
-CREATE TABLE "public"."players" (
+CREATE TABLE "players" (
 	"playerId" serial NOT NULL,
 	"name" TEXT NOT NULL UNIQUE,
 	"roundScore" integer NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE "public"."players" (
 
 
 
-CREATE TABLE "public"."game" (
+CREATE TABLE "game" (
 	"gameId" TEXT NOT NULL UNIQUE,
 	"questionsPerRound" int NOT NULL,
 	"roundsPerGame" int NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE "public"."game" (
 
 
 
-CREATE TABLE "public"."playerAnswers" (
+CREATE TABLE "playerAnswers" (
 	"firstAnswer" TEXT,
 	"secondAnswer" TEXT,
 	"scoredPoint" int NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "public"."playerAnswers" (
 
 
 
-CREATE TABLE "public"."prompts" (
+CREATE TABLE "prompts" (
 	"promptId" serial NOT NULL,
 	"question" TEXT NOT NULL,
 	CONSTRAINT "prompts_pk" PRIMARY KEY ("promptId")
@@ -54,7 +54,7 @@ CREATE TABLE "public"."prompts" (
 
 
 
-CREATE TABLE "public"."gamePrompts" (
+CREATE TABLE "gamePrompts" (
 	"randomLetter" TEXT NOT NULL,
 	"promptId" int NOT NULL,
 	"gameId" TEXT NOT NULL
