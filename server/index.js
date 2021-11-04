@@ -42,7 +42,10 @@ app.post('/api/join-game', (req, res, next) => {
   const gameScore = 0;
   const sql = `
     insert into "players" ("name", "gameId", "roundScore", "gameScore")
-    values ($1, $2, $3, $4)
+    select $1, $2, $3, $4
+    where exists (select 1
+                  from "game"
+                  where "gameId" = $2)
     returning *
     `;
   const params = [name, gameId, roundScore, gameScore];
