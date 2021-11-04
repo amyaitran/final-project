@@ -1,5 +1,13 @@
 import React from 'react';
 import createGameId from '../lib/create-game-id';
+import socketClient from 'socket.io-client';
+
+const SERVER = 'http://127.0.0.1:8080';
+const socket = socketClient(SERVER);
+socket.on('connection', () => {
+  // eslint-disable-next-line no-console
+  console.log('I\'m connected with the back-end');
+});
 
 export default class RoomCreation extends React.Component {
   constructor(props) {

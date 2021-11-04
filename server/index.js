@@ -1,9 +1,21 @@
 require('dotenv/config');
 const pg = require('pg');
 const express = require('express');
+const app = express();
 const jsonMiddleware = express.json();
 const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
+
+const { createServer } = require('http');
+const socketIo = require('socket.io');
+const server = createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
+const PORT = 8080;
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -12,7 +24,6 @@ const db = new pg.Pool({
   }
 });
 
-const app = express();
 app.use(staticMiddleware);
 app.use(errorMiddleware);
 app.use(jsonMiddleware);
@@ -57,7 +68,13 @@ app.post('/api/join-game', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.listen(process.env.PORT, () => {
+server.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`express server listening on port ${process.env.PORT}`);
+  console.log(`http server listening on port ${PORT}`);
+});
+
+io.on('connection', socket => {
+  // eslint-disable-next-line no-console
+  console.log('socket connected');
+  socket.emit('connection', null);
 });
