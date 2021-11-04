@@ -17,6 +17,7 @@ export default class PlayerCreation extends React.Component {
   }
 
   handleJoin(event) {
+    event.preventDefault();
     const req = {
       method: 'POST',
       headers: {
@@ -49,6 +50,7 @@ export default class PlayerCreation extends React.Component {
                 name="name"
                 className="shadow"
                 placeholder="enter your name"
+                maxLength="12"
                 required />
               </div>
             </div>
@@ -65,6 +67,7 @@ export default class PlayerCreation extends React.Component {
                 name="gameId"
                 className="shadow"
                 placeholder="enter 4-letter code"
+                maxLength="4"
                 required />
               </div>
             </div>

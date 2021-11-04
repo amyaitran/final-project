@@ -17,21 +17,6 @@ label {
   color: rgb(99 64 239);
 }
 
-/* input {
-  border: none;
-  border-radius: 6px;
-  height: 1.3rem;
-} */
-input {
-  border: none;
-  border-radius: 1rem;
-  height: 2.8rem;
-  width: 100%;
-  padding: 0.2rem 0 0 1.4rem
-
-  /* padding-left: 1.4rem; */
-}
-
 button {
   background-color: yellow;
   font-size: 1.5rem;
@@ -41,6 +26,29 @@ button {
   height: 3rem;
   box-shadow: 0 4px 0 0 rgb(0 0 0 / 25%);
   cursor: pointer;
+}
+
+input {
+  border: none;
+  border-radius: 1rem;
+  height: 2.8rem;
+  width: 100%;
+  padding-left: 1.4rem;
+}
+
+input::placeholder {
+  color: rgb(194 194 194);
+  font-size: 1.2rem;
+}
+
+input:focus {
+  outline: none;
+}
+
+input[type="text"] {
+  font-family: "Signika Negative", sans-serif;
+  font-size: 18pt;
+  font-weight: 600;
 }
 
 .shadow {
@@ -57,13 +65,4 @@ button {
 
 .fw-semi-bold {
   font-weight: 600;
-}
-
-input::placeholder {
-  color: rgb(194 194 194);
-  font-size: 1.2rem;
-}
-
-input:focus {
-  outline: none;
 }
