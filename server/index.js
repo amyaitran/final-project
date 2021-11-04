@@ -7,15 +7,15 @@ const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
 
 const { createServer } = require('http');
-const socketIo = require('socket.io');
+const socketIO = require('socket.io');
 const server = createServer(app);
-const io = socketIo(server, {
+
+const io = socketIO(server, {
   cors: {
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST']
   }
 });
-const PORT = 8080;
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -68,13 +68,17 @@ app.post('/api/join-game', (req, res, next) => {
     .catch(err => next(err));
 });
 
-server.listen(PORT, () => {
+server.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`http server listening on port ${PORT}`);
+  console.log(`express server listening on port ${process.env.PORT}`);
 });
 
 io.on('connection', socket => {
-  // eslint-disable-next-line no-console
-  console.log('socket connected');
-  socket.emit('connection', null);
+  console.log('New client connected');
+
+  // socket.on('incoming data', data => {
+  //   socket.broadcast.emit('outgoing data', { num: data });
+  // });
+
+  socket.on('disconnect', () => console.log('Client disconnected'));
 });

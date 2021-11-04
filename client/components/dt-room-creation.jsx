@@ -1,22 +1,34 @@
 import React from 'react';
 import createGameId from '../lib/create-game-id';
-import socketClient from 'socket.io-client';
+import socketIOClient from 'socket.io-client';
 
-const SERVER = 'http://127.0.0.1:8080';
-const socket = socketClient(SERVER);
-socket.on('connection', () => {
-  // eslint-disable-next-line no-console
-  console.log('I\'m connected with the back-end');
-});
+// const SERVER = 'http://127.0.0.1:8080';
+// const socket = socketClient(SERVER);
+// socket.on('connection', () => {
+//   console.log('I\'m connected with the back-end');
+// });
 
 export default class RoomCreation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       created: false,
-      gameId: null
+      gameId: null,
+      endpoint: 'http://localhost:3001',
+      response: null
     };
     this.handleCreate = this.handleCreate.bind(this);
+  }
+
+  componentDidMount() {
+    const { endpoint } = this.state;
+    const socket = socketIOClient(endpoint);
+    // ^connects us to the server and opens up a socket connection.
+    socket.on('connection', () => {
+      console.log('I\'m connected with the back-end');
+    });
+    // Listen for data on the "outgoing data" namespace and supply a callback for what to do when we get one. In this case, we set a state variable
+    // socket.on('outgoing data', data => this.setState({ response: data.num }));
   }
 
   handleCreate(event) {
