@@ -73,17 +73,16 @@ server.listen(process.env.PORT, () => {
   console.log(`server listening on port ${process.env.PORT}`);
 });
 
-io.on('connection', socket => {
-  console.log('New client connected', socket.id);
+const nsDesktop = io.of('/desktop');
+const nsMobile = io.of('/mobile');
 
-  // socket.join('test-room')
-  // As soon as a client is opened, it joins 'test-room’. change this later to gameId
+nsDesktop.on('connection', socket => {
+  console.log('new desktop client connected:', socket.id);
 
   socket.on('create room', roomCode => {
     console.log('room code created:', roomCode);
     // io.sockets.emit('create room', roomCode);
     socket.join(`room-${roomCode}`);
-    // this is desktop joining room.. need to implement namespace
 
   });
 
@@ -93,6 +92,34 @@ io.on('connection', socket => {
   });
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected', socket.id);
+    console.log('desktop client disconnected:', socket.id);
+    // Client disconnected P0_2GIbOS5UtxXyZAAAD
   });
 });
+
+nsMobile.on('connection', socket => {
+  console.log('new mobile client connected:', socket.id);
+
+  socket.on('create player', data => {
+    console.log('new player created:', data.name);
+
+    socket.join(`room-${data.gameId}`);
+
+    io.sockets.emit('new player', data);
+
+  });
+
+  socket.on('disconnecting', () => {
+    console.log('socket.rooms:', socket.rooms);
+    // socket.rooms: Set(2) { 'P0_2GIbOS5UtxXyZAAAD', 'room-PJCR' }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('mobile client disconnected:', socket.id);
+    // Client disconnected P0_2GIbOS5UtxXyZAAAD
+  });
+});
+
+// you can pass additional information in the query part of the client handshake
+// like the specific game id/code
+// you’ll probably use separate hash routes for that too

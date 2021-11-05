@@ -8,19 +8,15 @@ export default class RoomCreation extends React.Component {
     this.state = {
       endpoint: 'http://localhost:3001',
       created: false,
-      gameId: null,
-      response: null
+      gameId: null
     };
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  componentDidMount() {
-    // const socket = socketIOClient(this.state.endpoint);
-    // socket.on('connect', () => {
-    //   console.log('connected to back-end');
-    // });
-    // socket.on('outgoing data', data => this.setState({ response: data.key }));
-  }
+  // componentDidMount(event) {
+  //   const desktopSocket = socketIOClient(`${this.state.endpoint}/desktop`);
+  //   desktopSocket.on('new player', data => console.log('data received from mobile to desktop:', data));
+  // }
 
   handleCreate(event) {
     this.setState({
@@ -28,7 +24,7 @@ export default class RoomCreation extends React.Component {
       gameId: createGameId()
     }, () => {
       this.insertCodeToDB();
-      this.transmitCode();
+      this.initiateDesktopSocket();
     });
   }
 
@@ -47,16 +43,12 @@ export default class RoomCreation extends React.Component {
       });
   }
 
-  transmitCode() {
-    const socket = socketIOClient(this.state.endpoint);
-    socket.emit('create room', this.state.gameId);
+  initiateDesktopSocket() {
+    const desktopSocket = socketIOClient(`${this.state.endpoint}/desktop`);
+    desktopSocket.emit('create room', this.state.gameId);
   }
 
   render() {
-    // const socket = socketIOClient(this.state.endpoint);
-    // socket.on('create room', roomCode => {
-    //   console.log('room code:', roomCode);
-    // });
     return (
       <div className="center">
         {

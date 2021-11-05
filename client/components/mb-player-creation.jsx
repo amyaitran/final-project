@@ -1,9 +1,11 @@
 import React from 'react';
+import socketIOClient from 'socket.io-client';
 
 export default class PlayerCreation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      endpoint: 'http://localhost:3001',
       name: null,
       gameId: null
     };
@@ -30,6 +32,13 @@ export default class PlayerCreation extends React.Component {
       .catch(error => {
         console.error('Error:', error);
       });
+    this.initiateMobileSocket();
+  }
+
+  initiateMobileSocket() {
+    const { name, gameId } = this.state;
+    const mobileSocket = socketIOClient(`${this.state.endpoint}/mobile`);
+    mobileSocket.emit('create player', { name, gameId });
   }
 
   render() {
