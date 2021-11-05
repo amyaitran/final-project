@@ -70,15 +70,29 @@ app.post('/api/join-game', (req, res, next) => {
 
 server.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`express server listening on port ${process.env.PORT}`);
+  console.log(`server listening on port ${process.env.PORT}`);
 });
 
 io.on('connection', socket => {
-  console.log('New client connected');
+  console.log('New client connected', socket.id);
 
-  // socket.on('incoming data', data => {
-  //   socket.broadcast.emit('outgoing data', { num: data });
-  // });
+  // socket.join('test-room')
+  // As soon as a client is opened, it joins 'test-room’. change this later to gameId
 
-  socket.on('disconnect', () => console.log('Client disconnected'));
+  socket.on('create room', roomCode => {
+    console.log('room code created:', roomCode);
+    // io.sockets.emit('create room', roomCode);
+    socket.join(`room-${roomCode}`);
+    // this is desktop joining room.. need to implement namespace
+
+  });
+
+  socket.on('disconnecting', () => {
+    console.log('socket.rooms:', socket.rooms);
+    // socket.rooms: Set(2) { 'P0_2GIbOS5UtxXyZAAAD', 'room-PJCR' }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected', socket.id);
+  });
 });
