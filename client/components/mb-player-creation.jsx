@@ -36,9 +36,9 @@ export default class PlayerCreation extends React.Component {
   }
 
   initiateMobileSocket() {
-    const { name, gameId } = this.state;
-    const mobileSocket = socketIOClient(`${this.state.endpoint}/mobile`);
-    mobileSocket.emit('create player', { name, gameId });
+    const { endpoint, name, gameId } = this.state;
+    const mobileSocket = socketIOClient(`${endpoint}/mobile`, { query: `gameId=${gameId}` });
+    mobileSocket.emit('create player', { name });
   }
 
   render() {
@@ -81,7 +81,7 @@ export default class PlayerCreation extends React.Component {
               </div>
             </div>
             <div className="center">
-              <button className="col-six-tenths fw-semi-bold shadow">play!</button>
+              <button className="col-six-tenths shadow">play!</button>
             </div>
           </div>
         </form>

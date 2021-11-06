@@ -63,7 +63,11 @@ app.post('/api/join-game', (req, res, next) => {
   db.query(sql, params)
     .then(result => {
       const [player] = result.rows;
-      res.status(201).json(player);
+      if (player) {
+        res.status(201).json(player);
+      } else {
+        res.status(404).json({ error: 'invalid game code' });
+      }
     })
     .catch(err => next(err));
 });
@@ -74,52 +78,19 @@ server.listen(process.env.PORT, () => {
 });
 
 const nsDesktop = io.of('/desktop');
-const nsMobile = io.of('/mobile');
 
 nsDesktop.on('connection', socket => {
-  console.log('new desktop client connected:', socket.id);
-
   socket.on('create room', roomCode => {
-    console.log('room code created:', roomCode);
-    // io.sockets.emit('create room', roomCode);
     socket.join(`room-${roomCode}`);
-
-  });
-
-  socket.on('disconnecting', () => {
-    console.log('socket.rooms:', socket.rooms);
-    // socket.rooms: Set(2) { 'P0_2GIbOS5UtxXyZAAAD', 'room-PJCR' }
-  });
-
-  socket.on('disconnect', () => {
-    console.log('desktop client disconnected:', socket.id);
-    // Client disconnected P0_2GIbOS5UtxXyZAAAD
   });
 });
+
+const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
-  console.log('new mobile client connected:', socket.id);
-
+  const { gameId } = socket.handshake.query;
   socket.on('create player', data => {
-    console.log('new player created:', data.name);
-
-    socket.join(`room-${data.gameId}`);
-
-    io.sockets.emit('new player', data);
-
-  });
-
-  socket.on('disconnecting', () => {
-    console.log('socket.rooms:', socket.rooms);
-    // socket.rooms: Set(2) { 'P0_2GIbOS5UtxXyZAAAD', 'room-PJCR' }
-  });
-
-  socket.on('disconnect', () => {
-    console.log('mobile client disconnected:', socket.id);
-    // Client disconnected P0_2GIbOS5UtxXyZAAAD
+    socket.join(`room-${gameId}`);
+    nsDesktop.to(`room-${gameId}`).emit('new player', data);
   });
 });
-
-// you can pass additional information in the query part of the client handshake
-// like the specific game id/code
-// you’ll probably use separate hash routes for that too

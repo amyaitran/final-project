@@ -13,11 +13,6 @@ export default class RoomCreation extends React.Component {
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  // componentDidMount(event) {
-  //   const desktopSocket = socketIOClient(`${this.state.endpoint}/desktop`);
-  //   desktopSocket.on('new player', data => console.log('data received from mobile to desktop:', data));
-  // }
-
   handleCreate(event) {
     this.setState({
       created: true,
@@ -44,8 +39,9 @@ export default class RoomCreation extends React.Component {
   }
 
   initiateDesktopSocket() {
-    const desktopSocket = socketIOClient(`${this.state.endpoint}/desktop`);
-    desktopSocket.emit('create room', this.state.gameId);
+    const { endpoint, gameId } = this.state;
+    const desktopSocket = socketIOClient(`${endpoint}/desktop`, { query: `gameId=${gameId}` });
+    desktopSocket.emit('create room', gameId);
   }
 
   render() {
