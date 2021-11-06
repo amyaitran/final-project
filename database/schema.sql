@@ -8,10 +8,10 @@ create schema "public";
 
 CREATE TABLE "players" (
 	"playerId" serial NOT NULL,
-	"name" TEXT NOT NULL UNIQUE,
+	"name" TEXT NOT NULL,
 	"roundScore" integer NOT NULL,
 	"gameScore" integer NOT NULL,
-	"gameId" TEXT NOT NULL UNIQUE,
+	"gameId" TEXT NOT NULL,
 	CONSTRAINT "players_pk" PRIMARY KEY ("playerId")
 ) WITH (
   OIDS=FALSE

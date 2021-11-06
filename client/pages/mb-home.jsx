@@ -1,13 +1,13 @@
 import React from 'react';
-import RoomCreation from '../components/room-creation';
+import PlayerCreation from '../components/mb-player-creation';
 
-export default function Home(props) {
+export default function Mobile(props) {
   return (
     <>
       <h1 className="text-align-center">
         Oft-Topic
       </h1>
-      <RoomCreation />
+      <PlayerCreation />
     </>
   );
 }
