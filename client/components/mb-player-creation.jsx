@@ -5,7 +5,6 @@ export default class PlayerCreation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: 'http://localhost:3001',
       name: null,
       gameId: null
     };
@@ -36,8 +35,8 @@ export default class PlayerCreation extends React.Component {
   }
 
   initiateMobileSocket() {
-    const { endpoint, name, gameId } = this.state;
-    const mobileSocket = socketIOClient(`${endpoint}/mobile`, { query: `gameId=${gameId}` });
+    const { name, gameId } = this.state;
+    const mobileSocket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
     mobileSocket.emit('create player', { name });
   }
 

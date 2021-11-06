@@ -6,8 +6,7 @@ export default class RoomCreation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      endpoint: 'http://localhost:3001',
-      created: false,
+      isGameCreated: false,
       gameId: null
     };
     this.handleCreate = this.handleCreate.bind(this);
@@ -15,46 +14,50 @@ export default class RoomCreation extends React.Component {
 
   handleCreate(event) {
     this.setState({
-      created: true,
+      isGameCreated: true,
       gameId: createGameId()
     }, () => {
-      this.insertCodeToDB();
-      this.initiateDesktopSocket();
+      this.createGameRoom();
     });
   }
 
-  insertCodeToDB(event) {
+  createGameRoom(event) {
+    const { gameId } = this.state;
     const req = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ gameId: this.state.gameId })
+      body: JSON.stringify({ gameId })
     };
     fetch('/api/create-game', req)
       .then(response => response.json())
+      .then(data => {
+        this.socket = socketIOClient('/desktop', { query: `gameId=${gameId}` });
+        this.socket.emit('create room', gameId);
+      })
       .catch(error => {
         console.error('Error:', error);
       });
   }
 
-  initiateDesktopSocket() {
-    const { endpoint, gameId } = this.state;
-    const desktopSocket = socketIOClient(`${endpoint}/desktop`, { query: `gameId=${gameId}` });
-    desktopSocket.emit('create room', gameId);
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 
   render() {
     return (
       <div className="center">
         {
-        (!this.state.created)
-          ? <a href="#create-game">
-              <button onClick={this.handleCreate}>create a new game!</button>
-            </a>
-          : <h2>
+        (this.state.isGameCreated)
+          ? <h2>
               <span className="purple font-size-med">room code:<br/></span>{this.state.gameId}
             </h2>
+          : <a href="#create-game">
+              <button onClick={this.handleCreate}>create a new game!</button>
+            </a>
         }
       </div>
     );

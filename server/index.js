@@ -10,12 +10,7 @@ const { createServer } = require('http');
 const socketIO = require('socket.io');
 const server = createServer(app);
 
-const io = socketIO(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST']
-  }
-});
+const io = socketIO(server);
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
