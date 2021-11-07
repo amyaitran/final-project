@@ -75,28 +75,27 @@ server.listen(process.env.PORT, () => {
 const nsDesktop = io.of('/desktop');
 
 nsDesktop.on('connection', socket => {
-  console.log('new desktop client connected:', socket.id);
-
   socket.on('create room', roomCode => {
-    console.log('room code created:', roomCode);
-
     socket.join(`room-${roomCode}`);
-    // console.log('rooms availabe:', nsDesktop.adapter.rooms);
   });
 });
 
 const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
-  console.log('new mobile client connected:', socket.id);
   const { gameId } = socket.handshake.query;
+  const arr = Array.from(nsDesktop.adapter.rooms);
+  const validRooms = [];
+  for (let i = 0; i < arr.length; i++) {
+    validRooms.push(arr[i][0]);
+  }
   socket.on('create player', data => {
-
-    console.log('new player created:', data.name);
-
-    socket.join(`room-${gameId}`);
-
-    nsDesktop.to(`room-${gameId}`).emit('new player', data);
-
+    if (validRooms.includes(`room-${gameId}`)) {
+      socket.emit('valid id', true);
+      socket.join(`room-${gameId}`);
+      nsDesktop.to(`room-${gameId}`).emit('new player', data);
+    } else {
+      socket.emit('valid id', false);
+    }
   });
 });
