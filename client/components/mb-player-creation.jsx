@@ -11,6 +11,7 @@ export default class PlayerCreation extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
 
   handleChange(event) {
@@ -37,9 +38,9 @@ export default class PlayerCreation extends React.Component {
 
   initiateMobileSocket() {
     const { name, gameId } = this.state;
-    const socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
-    socket.emit('create player', { name });
-    socket.on('valid id', valid => {
+    this.socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
+    this.socket.emit('create player', { name });
+    this.socket.on('valid id', valid => {
       if (valid) {
         this.setState({ isCodeValid: true });
       } else {
@@ -48,11 +49,15 @@ export default class PlayerCreation extends React.Component {
     });
   }
 
+  startGame() {
+    this.socket.emit('start game', 'TEST');
+  }
+
   render() {
     return (
       (this.state.isCodeValid)
         ? <div className="center">
-            <button className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+            <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
           </div>
         : <>
           <form onSubmit={this.handleJoin}>

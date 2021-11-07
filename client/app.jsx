@@ -1,6 +1,8 @@
 import React from 'react';
 import Home from './pages/dt-home';
 import Mobile from './pages/mb-home';
+import DesktopPlay from './pages/dt-play';
+import MobilePlay from './pages/mb-play';
 import parseRoute from './lib/parse-route';
 
 export default class App extends React.Component {
@@ -18,6 +20,12 @@ export default class App extends React.Component {
     }
     if (path === 'mobile') {
       return <Mobile />;
+    }
+    if (path === 'game') {
+      return <DesktopPlay />;
+    }
+    if (path === 'play') {
+      return <MobilePlay />;
     }
   }
 

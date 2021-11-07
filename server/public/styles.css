@@ -94,12 +94,20 @@ button:active {
   color: black;
 }
 
+.yellow {
+  color: yellow;
+}
+
 .red {
   color: red;
 }
 
 .tan {
   color: rgb(219 216 147);
+}
+
+.fs-big {
+  font-size: 8rem;
 }
 
 .fs-med {

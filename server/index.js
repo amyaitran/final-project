@@ -7,9 +7,9 @@ const errorMiddleware = require('./error-middleware');
 const staticMiddleware = require('./static-middleware');
 
 const { createServer } = require('http');
-const socketIO = require('socket.io');
 const server = createServer(app);
 
+const socketIO = require('socket.io');
 const io = socketIO(server);
 
 const db = new pg.Pool({
@@ -23,7 +23,7 @@ app.use(staticMiddleware);
 app.use(errorMiddleware);
 app.use(jsonMiddleware);
 
-app.post('/api/create-game', (req, res, next) => {
+app.post('/api/game', (req, res, next) => {
   const { gameId } = req.body;
   const questionsPerRound = 8;
   const roundsPerGame = 5;
@@ -75,7 +75,9 @@ server.listen(process.env.PORT, () => {
 const nsDesktop = io.of('/desktop');
 
 nsDesktop.on('connection', socket => {
+  console.log('new desktop client connected:', socket.id);
   socket.on('create room', roomCode => {
+    console.log('room code created:', roomCode);
     socket.join(`room-${roomCode}`);
   });
 });
@@ -91,6 +93,7 @@ nsMobile.on('connection', socket => {
   }
   socket.on('create player', data => {
     if (validRooms.includes(`room-${gameId}`)) {
+      console.log('new player created:', data.name);
       socket.emit('valid id', true);
       socket.join(`room-${gameId}`);
       nsDesktop.to(`room-${gameId}`).emit('new player', data);
@@ -98,4 +101,12 @@ nsMobile.on('connection', socket => {
       socket.emit('valid id', false);
     }
   });
+});
+
+nsMobile.on('start game', data => {
+  const { gameId } = data.handshake.query;
+  console.log('GAMEIDHANDSHAKE:', gameId);
+  console.log('data received mobile to server:', data);
+  nsDesktop.to(`room-${gameId}`).emit('start game', data.route);
+  // nsDesktop.to(`room-${data.gameId}`).emit('start game', data.route);
 });
