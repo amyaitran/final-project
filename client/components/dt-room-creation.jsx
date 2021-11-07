@@ -49,17 +49,59 @@ export default class RoomCreation extends React.Component {
 
   render() {
     return (
-      <div className="center">
-        {
-        (this.state.isGameCreated)
-          ? <h2>
-              <span className="purple font-size-med">room code:<br/></span>{this.state.gameId}
-            </h2>
-          : <a href="#create-game">
-              <button onClick={this.handleCreate}>create a new game!</button>
-            </a>
-        }
-      </div>
+      (this.state.isGameCreated)
+        ? <>
+            <div className="center">
+              <h2>
+                <span className="purple font-size-med">room code:<br/></span>{this.state.gameId}
+              </h2>
+            </div>
+            <div className="center">
+              <div className="dt-container">
+                <h2 className="black fs-med margin-0">Waiting for players...</h2>
+                <div className="row">
+                  <div className="col-half text-align-left">
+                    <ul className="purple line-height-3 handwritten fs-14">
+                      <li><i className="red rotate fas fa-square-full"></i>
+                        Amy
+                      </li>
+                      <li><i className="red rotate fas fa-square-full"></i>
+                        charchar
+                      </li>
+                      <li><i className="red rotate fas fa-square-full"></i>
+                        player xyz
+                      </li>
+                      <li><i className="tan rotate fas fa-square-full"></i>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="col-half text-align-left">
+                    <ul className="purple line-height-2 handwritten fs-14">
+                      <li><i className="tan rotate fas fa-square-full"></i>
+                      </li>
+                      <li><i className="tan rotate fas fa-square-full"></i>
+                      </li>
+                      <li><i className="tan rotate fas fa-square-full"></i>
+                      </li>
+                      <li><i className="tan rotate fas fa-square-full"></i>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </>
+        : <>
+            <h1 className="text-align-center">
+              Oft-Topic
+            </h1>
+            <div className="center">
+              <a href="#create-game">
+                <button onClick={this.handleCreate}>create a new game!</button>
+              </a>
+            </div>
+          </>
     );
   }
 }
