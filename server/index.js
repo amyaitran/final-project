@@ -84,8 +84,18 @@ const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
   const { gameId } = socket.handshake.query;
+  const arr = Array.from(nsDesktop.adapter.rooms);
+  const validRooms = [];
+  for (let i = 0; i < arr.length; i++) {
+    validRooms.push(arr[i][0]);
+  }
   socket.on('create player', data => {
-    socket.join(`room-${gameId}`);
-    nsDesktop.to(`room-${gameId}`).emit('new player', data);
+    if (validRooms.includes(`room-${gameId}`)) {
+      socket.emit('valid id', true);
+      socket.join(`room-${gameId}`);
+      nsDesktop.to(`room-${gameId}`).emit('new player', data);
+    } else {
+      socket.emit('valid id', false);
+    }
   });
 });
