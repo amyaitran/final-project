@@ -31,7 +31,7 @@ export default class RoomCreation extends React.Component {
       },
       body: JSON.stringify({ gameId })
     };
-    fetch('/api/create-game', req)
+    fetch('/api/game', req)
       .then(response => response.json())
       .then(data => {
         this.socket = socketIOClient('/desktop', { query: `gameId=${gameId}` });
@@ -57,6 +57,14 @@ export default class RoomCreation extends React.Component {
     }
   }
 
+  startGame(event) {
+    this.socket.on('start game', data => {
+      console.log('receiving data from server to desktop:', data);
+      // window.location.hash = '#game';
+      // this.state.route.path = '#game';
+    });
+  }
+
   render() {
     const { players, isGameCreated } = this.state;
     return (
@@ -67,7 +75,7 @@ export default class RoomCreation extends React.Component {
                 <span className="purple font-size-med">room code:<br/></span>{this.state.gameId}
               </h2>
             </div>
-            <div className="center">
+            <div className="center row">
               <div className="dt-container">
                 <h2 className="black fs-med margin-0">Waiting for players...</h2>
                 <div className="row">
@@ -113,7 +121,7 @@ export default class RoomCreation extends React.Component {
               Oft-Topic
             </h1>
             <div className="center">
-              <a href="#create-game">
+              <a href="#game">
                 <button onClick={this.handleCreate}>create a new game!</button>
               </a>
             </div>
