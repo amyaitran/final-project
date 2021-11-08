@@ -80,6 +80,10 @@ nsDesktop.on('connection', socket => {
   socket.on('create room', roomCode => {
     console.log('room code created:', roomCode);
     socket.join(`room-${roomCode}`);
+    socket.on('random letter', letter => {
+      console.log('letter received from dt:', letter);
+      nsMobile.to(`room-${roomCode}`).emit('random letter', letter);
+    });
   });
 });
 

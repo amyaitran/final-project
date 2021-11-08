@@ -1,4 +1,4 @@
 export default function generateRandomLetter() {
-  const selectedAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWY';
+  const selectedAlphabet = 'ABCDEFGHIJKLMNOPQRSTVW';
   return selectedAlphabet[Math.floor(Math.random() * selectedAlphabet.length)];
 }

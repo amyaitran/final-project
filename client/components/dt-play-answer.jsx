@@ -1,50 +1,60 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
 import generateRandomLetter from '../lib/generate-random-letter';
+import convertTime from '../lib/convert-time';
 
 export default class DesktopGame extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      randomLetter: null,
       countdown: 3,
-      timerComplete: false
+      timer: 2
     };
   }
 
   componentDidMount() {
+    console.log('props', this.props);
+    this.setState({ randomLetter: generateRandomLetter() });
     this.startCountdown();
   }
-
-  //   componentWillUnmount() {
-  //    clearInterval(this.startCountdown);
-  // }
 
   startCountdown() {
     this.countdownID = setInterval(
       () => {
         if (this.state.countdown === 0) {
           clearInterval(this.countdownID);
+          this.startTimer();
         } else {
           this.setState({ countdown: this.state.countdown - 1 });
         }
       }, 1000);
   }
 
-  // this.countdownID = setInterval(
-  //   () => this.setState(
-  //     { countdownSeconds: this.state.countdownSeconds - 1 }
-  //   ), 1000);
+  startTimer() {
+    const socket = this.props.socket;
+    this.timerID = setInterval(
+      () => {
+        if (this.state.timer === 0) {
+          clearInterval(this.timerID);
+          socket.emit('random letter', 'ABC');
+          // socket.emit('random letter', this.state.randomLetter);
+        } else {
+          this.setState({ timer: this.state.timer - 1 });
+        }
+      }, 1000);
+  }
 
   render() {
     return (
       (this.state.countdown === 0)
         ? <div className="center">
             <h1 className="mb-0">random letter:</h1>
-            <h1 className="fs-big margin-0 yellow">{generateRandomLetter()}</h1>
-            <h1>1:58</h1>
+            <h1 className="fs-big margin-0 yellow">{this.state.randomLetter}</h1>
+            <h1>{convertTime(this.state.timer)}</h1>
           </div>
         : <div className="center">
-           <h1 className="fs-big">{this.state.countdown}</h1>
+            <h1 className="fs-big">{this.state.countdown}</h1>
           </div>
     );
   }
