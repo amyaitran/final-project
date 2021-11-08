@@ -13,18 +13,23 @@ export default class App extends React.Component {
     };
   }
 
+  componentDidMount() {
+    window.addEventListener('hashchange', () => {
+      this.setState(
+        { route: parseRoute(window.location.hash) }
+      );
+    });
+  }
+
   renderPage() {
     const { path } = this.state.route;
     if (path === '') {
       return <Home />;
-    }
-    if (path === 'mobile') {
+    } else if (path === 'mobile') {
       return <Mobile />;
-    }
-    if (path === 'game') {
+    } else if (path === 'game') {
       return <DesktopPlay />;
-    }
-    if (path === 'play') {
+    } else if (path === 'play') {
       return <MobilePlay />;
     }
   }

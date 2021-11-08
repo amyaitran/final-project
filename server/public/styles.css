@@ -29,7 +29,7 @@ button {
   cursor: pointer;
 }
 
-input {
+input.new-player {
   border: none;
   border-radius: 1rem;
   height: 2.8rem;
@@ -37,23 +37,32 @@ input {
   padding-left: 1.4rem;
 }
 
-input::placeholder {
+input::placeholder.new-player {
   color: rgb(194 194 194);
   font-size: 1.2rem;
 }
 
-input:focus {
-  outline: none;
-}
-
-input[type="text"] {
+input[type="text"].new-player {
   font-family: "Signika Negative", sans-serif;
   font-size: 18pt;
   font-weight: 600;
 }
 
-li {
-  list-style: none;
+input[type="text"].answer {
+  background: transparent;
+  border: none;
+  color: rgb(99 64 239);
+  font-family: "Gloria Hallelujah", cursive;
+  font-weight: 700;
+}
+
+input.answer::placeholder {
+  color: rgb(194 194 194);
+  font-family: "Signika Negative", sans-serif;
+}
+
+input:focus {
+  outline: none;
 }
 
 i {
@@ -78,12 +87,24 @@ button:active {
   width: 600px;
 }
 
+.mb-container {
+  max-width: 260px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .shadow {
   box-shadow: 2px 6px 0 0 rgb(0 0 0 / 25%);
 }
 
 .bg-yellow {
   background-color: yellow;
+}
+
+.note {
+  background-color: rgb(244 243 195);
+  box-shadow: 2px 6px 0 0 rgb(0 0 0 / 25%);
+  border-radius: 0.8rem;
 }
 
 .purple {
@@ -136,4 +157,8 @@ button:active {
 
 .height-5 {
   height: 5rem;
+}
+
+.style-none {
+  list-style: none;
 }

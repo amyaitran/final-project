@@ -50,18 +50,20 @@ export default class PlayerCreation extends React.Component {
   }
 
   startGame() {
-    this.socket.emit('start game', 'TEST');
+    this.socket.emit('start game', '#game');
   }
 
   render() {
     return (
       (this.state.isCodeValid)
         ? <div className="center">
-            <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+            <a href="#play">
+              <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+            </a>
           </div>
         : <>
           <form onSubmit={this.handleJoin}>
-            <div className="container">
+            <div className="mb-container">
               <div className="ml-15">
                 <div className="col-full">
                   <label htmlFor="name" className="fs-med fw-semi-bold">name</label>
@@ -73,7 +75,7 @@ export default class PlayerCreation extends React.Component {
                   onChange={this.handleChange}
                   type="text"
                   name="name"
-                  className="shadow"
+                  className="new-player shadow"
                   placeholder="enter your name"
                   maxLength="12"
                   required />
@@ -90,7 +92,7 @@ export default class PlayerCreation extends React.Component {
                   onChange={this.handleChange}
                   type="text"
                   name="gameId"
-                  className="shadow"
+                  className="new-player shadow"
                   placeholder="enter 4-letter code"
                   maxLength="4"
                   required />

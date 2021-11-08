@@ -37,6 +37,7 @@ export default class RoomCreation extends React.Component {
         this.socket = socketIOClient('/desktop', { query: `gameId=${gameId}` });
         this.socket.emit('create room', gameId);
         this.addNewPlayer();
+        this.startGame();
       })
       .catch(error => {
         console.error('Error:', error);
@@ -51,18 +52,18 @@ export default class RoomCreation extends React.Component {
     });
   }
 
+  startGame(event) {
+    this.socket.on('start game', data => {
+      console.log('receiving data from server to desktop:', data);
+      window.location.hash = data;
+      // this.state.route.path = '#game';
+    });
+  }
+
   componentWillUnmount() {
     if (this.socket) {
       this.socket.disconnect();
     }
-  }
-
-  startGame(event) {
-    this.socket.on('start game', data => {
-      console.log('receiving data from server to desktop:', data);
-      // window.location.hash = '#game';
-      // this.state.route.path = '#game';
-    });
   }
 
   render() {
@@ -80,7 +81,7 @@ export default class RoomCreation extends React.Component {
                 <h2 className="black fs-med margin-0">Waiting for players...</h2>
                 <div className="row">
                   <div className="col-half text-align-left">
-                    <ul className="purple line-height-3 handwritten fs-14">
+                    <ul className="purple line-height-3 handwritten fs-14 style-none">
                       {players[0]
                         ? <li><i className="red rotate fas fa-square-full"></i>{players[0]}</li>
                         : <li><i className="tan rotate fas fa-square-full"></i></li>}
@@ -96,7 +97,7 @@ export default class RoomCreation extends React.Component {
                     </ul>
                   </div>
                   <div className="col-half text-align-left">
-                    <ul className="purple line-height-3 handwritten fs-14">
+                    <ul className="purple line-height-3 handwritten fs-14 style-none">
                       {players[4]
                         ? <li><i className="red rotate fas fa-square-full"></i>{players[4]}</li>
                         : <li><i className="tan rotate fas fa-square-full"></i></li>}
@@ -121,9 +122,7 @@ export default class RoomCreation extends React.Component {
               Oft-Topic
             </h1>
             <div className="center">
-              <a href="#game">
-                <button onClick={this.handleCreate}>create a new game!</button>
-              </a>
+              <button onClick={this.handleCreate}>create a new game!</button>
             </div>
           </>
     );

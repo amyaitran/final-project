@@ -10,6 +10,7 @@ const { createServer } = require('http');
 const server = createServer(app);
 
 const socketIO = require('socket.io');
+const { Console } = require('console');
 const io = socketIO(server);
 
 const db = new pg.Pool({
@@ -101,12 +102,16 @@ nsMobile.on('connection', socket => {
       socket.emit('valid id', false);
     }
   });
+  socket.on('start game', data => {
+    console.log('data received mobile to server:', data);
+    nsDesktop.to(`room-${gameId}`).emit('start game', data);
+  });
 });
 
-nsMobile.on('start game', data => {
-  const { gameId } = data.handshake.query;
-  console.log('GAMEIDHANDSHAKE:', gameId);
-  console.log('data received mobile to server:', data);
-  nsDesktop.to(`room-${gameId}`).emit('start game', data.route);
-  // nsDesktop.to(`room-${data.gameId}`).emit('start game', data.route);
-});
+// socket.on('start game', data => {
+//   const { gameId } = data.handshake.query;
+//   console.log('GAMEIDHANDSHAKE:', gameId);
+//   console.log('data received mobile to server:', data);
+//   nsDesktop.to(`room-${gameId}`).emit('start game', data.route);
+//   // nsDesktop.to(`room-${data.gameId}`).emit('start game', data.route);
+// });
