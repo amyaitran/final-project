@@ -53,6 +53,12 @@ export default class PlayerCreation extends React.Component {
     this.socket.emit('start game', '#game');
   }
 
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
   render() {
     return (
       (this.state.isCodeValid)

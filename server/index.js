@@ -85,11 +85,15 @@ nsDesktop.on('connection', socket => {
       nsMobile.to(`room-${roomCode}`).emit('random letter', letter);
     });
   });
+  socket.on('disconnect', () => {
+    console.log('desktop client disconnected:', socket.id);
+  });
 });
 
 const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
+  console.log('new mobile client connected:', socket.id);
   const { gameId } = socket.handshake.query;
   const arr = Array.from(nsDesktop.adapter.rooms);
   const validRooms = [];
@@ -109,6 +113,9 @@ nsMobile.on('connection', socket => {
   socket.on('start game', data => {
     console.log('data received mobile to server:', data);
     nsDesktop.to(`room-${gameId}`).emit('start game', data);
+  });
+  socket.on('disconnect', () => {
+    console.log('mobile client disconnected:', socket.id);
   });
 });
 

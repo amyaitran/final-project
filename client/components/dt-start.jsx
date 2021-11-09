@@ -1,6 +1,6 @@
 import React from 'react';
-import createGameId from '../lib/create-game-id';
 import socketIOClient from 'socket.io-client';
+import createGameId from '../lib/create-game-id';
 
 export default class RoomCreation extends React.Component {
   constructor(props) {
@@ -11,16 +11,31 @@ export default class RoomCreation extends React.Component {
       players: []
     };
     this.handleCreate = this.handleCreate.bind(this);
+    this.createGameRoom = this.createGameRoom.bind(this);
   }
 
-  handleCreate(event) {
+  handleCreate() {
+    const generatedGameId = createGameId();
+    this.props.data.createGame(generatedGameId);
     this.setState({
       isGameCreated: true,
-      gameId: createGameId()
+      gameId: generatedGameId
     }, () => {
       this.createGameRoom();
     });
   }
+
+  // handleCreate(event) {
+  //   console.log('props:', this.props);
+  //   this.setState({
+  //     isGameCreated: true,
+  //     gameId: this.props.gameId
+  //     // gameId: createGameId()
+  //   }, () => {
+  //     this.createGameRoom();
+  //     // this.props.gameId(this.state.gameId);
+  //   });
+  // }
 
   createGameRoom(event) {
     const { gameId } = this.state;

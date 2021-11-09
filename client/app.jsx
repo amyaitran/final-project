@@ -1,16 +1,18 @@
 import React from 'react';
-import Home from './pages/dt-home';
 import Mobile from './pages/mb-home';
 import DesktopPlay from './pages/dt-play';
 import MobilePlay from './pages/mb-play';
 import parseRoute from './lib/parse-route';
+import RoomCreation from './components/dt-start';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      route: parseRoute(window.location.hash)
+      route: parseRoute(window.location.hash),
+      gameId: null
     };
+    this.createGame = this.createGame.bind(this);
   }
 
   componentDidMount() {
@@ -21,10 +23,16 @@ export default class App extends React.Component {
     });
   }
 
+  createGame(result) {
+    this.setState({ gameId: result }, () => console.log('app state:', this.state));
+  }
+
   renderPage() {
     const { path } = this.state.route;
     if (path === '') {
-      return <Home />;
+      return <RoomCreation data={
+        { gameId: this.state.gameId, createGame: this.createGame.bind(this) }
+        } />;
     } else if (path === 'mobile') {
       return <Mobile />;
     } else if (path === 'game') {
@@ -35,6 +43,8 @@ export default class App extends React.Component {
   }
 
   render() {
-    return this.renderPage();
+    return (
+      this.renderPage()
+    );
   }
 }
