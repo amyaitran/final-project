@@ -11,7 +11,7 @@ export default class MobileGame extends React.Component {
   }
 
   componentDidMount() {
-    this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.data.gameId}` });
+    this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.gameId}` });
     this.socket.on('random letter', letter => this.setState({ randomLetter: letter }));
     this.socket.on('random prompts', data => this.setState({ prompts: data }));
   }

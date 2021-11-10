@@ -16,7 +16,7 @@ export default class RoomCreation extends React.Component {
 
   handleCreate() {
     const generatedGameId = createGameId();
-    this.props.data.updateGameId(generatedGameId);
+    this.props.updateGameId(generatedGameId);
     this.setState({
       isGameCreated: true,
       gameId: generatedGameId

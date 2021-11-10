@@ -20,7 +20,7 @@ export default class DesktopGame extends React.Component {
   }
 
   startCountdown() {
-    this.socket = socketIOClient('/desktop', { query: `gameId=${this.props.data.gameId}` });
+    this.socket = socketIOClient('/desktop', { query: `gameId=${this.props.gameId}` });
     this.countdownID = setInterval(
       () => {
         if (this.state.countdown === 0) {
@@ -48,7 +48,7 @@ export default class DesktopGame extends React.Component {
     fetch('/api/prompts')
       .then(response => response.json())
       .then(data => {
-        this.props.data.updatePrompts(data);
+        this.props.updatePrompts();
         this.socket.emit('random prompts', data);
       });
   }

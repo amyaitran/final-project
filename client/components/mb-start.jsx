@@ -43,7 +43,7 @@ export default class PlayerCreation extends React.Component {
     this.socket.on('valid id', valid => {
       if (valid) {
         this.setState({ isCodeValid: true });
-        this.props.data.updateGameId(gameId);
+        this.props.updateGameId(gameId);
         this.socket.on('start game', () => { window.location.hash = '#play'; });
       } else {
         this.setState({ isCodeValid: false });
