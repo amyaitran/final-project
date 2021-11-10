@@ -11,6 +11,7 @@ export default class PlayerCreation extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
 
   handleChange(event) {
@@ -37,26 +38,48 @@ export default class PlayerCreation extends React.Component {
 
   initiateMobileSocket() {
     const { name, gameId } = this.state;
-    const socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
-    socket.emit('create player', { name });
-    socket.on('valid id', valid => {
+    this.socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
+    this.socket.emit('create player', { name });
+    this.socket.on('valid id', valid => {
       if (valid) {
         this.setState({ isCodeValid: true });
+        this.props.updateGameId(gameId);
+        this.socket.on('start game', () => { window.location.hash = '#play'; });
       } else {
         this.setState({ isCodeValid: false });
       }
     });
   }
 
+  startGame() {
+    this.socket.emit('start game');
+  }
+
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
   render() {
     return (
       (this.state.isCodeValid)
-        ? <div className="center">
-            <button className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
-          </div>
+        ? <>
+            <h1 className="text-align-center">
+              Oft-Topic
+            </h1>
+            <div className="center">
+              <a href="#play">
+                <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+              </a>
+            </div>
+          </>
         : <>
+          <h1 className="text-align-center">
+            Oft-Topic
+          </h1>
           <form onSubmit={this.handleJoin}>
-            <div className="container">
+            <div className="mb-container">
               <div className="ml-15">
                 <div className="col-full">
                   <label htmlFor="name" className="fs-med fw-semi-bold">name</label>
@@ -68,7 +91,7 @@ export default class PlayerCreation extends React.Component {
                   onChange={this.handleChange}
                   type="text"
                   name="name"
-                  className="shadow"
+                  className="new-player shadow"
                   placeholder="enter your name"
                   maxLength="12"
                   required />
@@ -85,7 +108,7 @@ export default class PlayerCreation extends React.Component {
                   onChange={this.handleChange}
                   type="text"
                   name="gameId"
-                  className="shadow"
+                  className="new-player shadow"
                   placeholder="enter 4-letter code"
                   maxLength="4"
                   required />

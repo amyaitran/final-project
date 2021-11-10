@@ -1,5 +1,5 @@
 import React from 'react';
-import PlayerCreation from '../components/mb-player-creation';
+import PlayerCreation from '../components/mb-start';
 
 export default function Mobile(props) {
   return (
