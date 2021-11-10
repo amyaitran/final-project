@@ -11,13 +11,17 @@ export default class MobileGame extends React.Component {
     };
   }
 
-  receiveRandomLetter() {
-    this.socket = socketIOClient('/mobile');
-    // this.socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
-    socket.on('random letter', letter => {
-      console.log('receiving letter from server', letter);
+  componentDidMount() {
+    this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.data.gameId}` });
+    this.socket.on('random letter', letter => {
       this.setState({ randomLetter: letter });
     });
+  }
+
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 
   render() {

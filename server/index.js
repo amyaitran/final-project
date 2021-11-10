@@ -77,14 +77,21 @@ const nsDesktop = io.of('/desktop');
 
 nsDesktop.on('connection', socket => {
   console.log('new desktop client connected:', socket.id);
+  const { gameId } = socket.handshake.query;
+
   socket.on('create room', roomCode => {
     console.log('room code created:', roomCode);
     socket.join(`room-${roomCode}`);
-    socket.on('random letter', letter => {
-      console.log('letter received from dt:', letter);
-      nsMobile.to(`room-${roomCode}`).emit('random letter', letter);
-    });
   });
+
+  socket.on('random letter', letter => {
+    socket.join(`room-${gameId}`);
+    console.log(`DESKTOPsocket ${socket.id} joined room-${gameId}`);
+    console.log('letter received from dt:', letter);
+    nsMobile.to(`room-${gameId}`).emit('random letter', letter);
+    console.log(`sending letter ${letter} to mobilesockets in room-${gameId}`);
+  });
+
   socket.on('disconnect', () => {
     console.log('desktop client disconnected:', socket.id);
   });
@@ -93,27 +100,35 @@ nsDesktop.on('connection', socket => {
 const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
-  console.log('new mobile client connected:', socket.id);
   const { gameId } = socket.handshake.query;
+  console.log(`new mobile client connected of ${socket.id} and a handshake gameId of ${gameId}`);
+  socket.join(`room-${gameId}`);
+  console.log(`MOBILEsocket ${socket.id} joined room-${gameId}`);
+  // if (gameId) {
+  //   socket.join(`room-${gameId}`);
+  //   console.log(`mobilesocket ${socket.id} joined room-${gameId}`);
+  // }
+
   const arr = Array.from(nsDesktop.adapter.rooms);
   const validRooms = [];
   for (let i = 0; i < arr.length; i++) {
     validRooms.push(arr[i][0]);
   }
+
   socket.on('create player', data => {
     if (validRooms.includes(`room-${gameId}`)) {
-      console.log('new player created:', data.name);
       socket.emit('valid id', true);
-      socket.join(`room-${gameId}`);
       nsDesktop.to(`room-${gameId}`).emit('new player', data);
     } else {
       socket.emit('valid id', false);
     }
   });
-  socket.on('start game', data => {
-    console.log('data received mobile to server:', data);
-    nsDesktop.to(`room-${gameId}`).emit('start game', data);
+
+  socket.on('start game', () => {
+    nsDesktop.to(`room-${gameId}`).emit('start game');
+    nsMobile.to(`room-${gameId}`).emit('start game');
   });
+
   socket.on('disconnect', () => {
     console.log('mobile client disconnected:', socket.id);
   });

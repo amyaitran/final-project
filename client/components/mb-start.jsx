@@ -43,6 +43,8 @@ export default class PlayerCreation extends React.Component {
     this.socket.on('valid id', valid => {
       if (valid) {
         this.setState({ isCodeValid: true });
+        this.props.data.updateGameId(gameId);
+        this.socket.on('start game', () => { window.location.hash = '#play'; });
       } else {
         this.setState({ isCodeValid: false });
       }
@@ -50,7 +52,7 @@ export default class PlayerCreation extends React.Component {
   }
 
   startGame() {
-    this.socket.emit('start game', '#game');
+    this.socket.emit('start game');
   }
 
   componentWillUnmount() {
@@ -62,12 +64,20 @@ export default class PlayerCreation extends React.Component {
   render() {
     return (
       (this.state.isCodeValid)
-        ? <div className="center">
-            <a href="#play">
-              <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
-            </a>
-          </div>
+        ? <>
+            <h1 className="text-align-center">
+              Oft-Topic
+            </h1>
+            <div className="center">
+              <a href="#play">
+                <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+              </a>
+            </div>
+          </>
         : <>
+          <h1 className="text-align-center">
+            Oft-Topic
+          </h1>
           <form onSubmit={this.handleJoin}>
             <div className="mb-container">
               <div className="ml-15">

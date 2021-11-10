@@ -1,9 +1,9 @@
 import React from 'react';
-import Mobile from './pages/mb-home';
-import DesktopPlay from './pages/dt-play';
-import MobilePlay from './pages/mb-play';
 import parseRoute from './lib/parse-route';
 import RoomCreation from './components/dt-start';
+import DesktopGame from './components/dt-play-answer';
+import MobileGame from './components/mb-play-answer';
+import PlayerCreation from './components/mb-start';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class App extends React.Component {
       route: parseRoute(window.location.hash),
       gameId: null
     };
-    this.createGame = this.createGame.bind(this);
+    this.updateGameId = this.updateGameId.bind(this);
   }
 
   componentDidMount() {
@@ -23,22 +23,23 @@ export default class App extends React.Component {
     });
   }
 
-  createGame(result) {
-    this.setState({ gameId: result }, () => console.log('app state:', this.state));
+  updateGameId(result) {
+    this.setState({ gameId: result });
+    console.log('app state has changed:');
   }
 
   renderPage() {
-    const { path } = this.state.route;
-    if (path === '') {
-      return <RoomCreation data={
-        { gameId: this.state.gameId, createGame: this.createGame.bind(this) }
-        } />;
-    } else if (path === 'mobile') {
-      return <Mobile />;
-    } else if (path === 'game') {
-      return <DesktopPlay />;
-    } else if (path === 'play') {
-      return <MobilePlay />;
+    const { route, gameId } = this.state;
+    if (route.path === '') {
+      return <RoomCreation
+        data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } } />;
+    } else if (route.path === 'mobile') {
+      return <PlayerCreation
+        data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } }/>;
+    } else if (route.path === 'game') {
+      return <DesktopGame data={ { gameId } }/>;
+    } else if (route.path === 'play') {
+      return <MobileGame data={ { gameId } }/>;
     }
   }
 

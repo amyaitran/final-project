@@ -16,7 +16,7 @@ export default class RoomCreation extends React.Component {
 
   handleCreate() {
     const generatedGameId = createGameId();
-    this.props.data.createGame(generatedGameId);
+    this.props.data.updateGameId(generatedGameId);
     this.setState({
       isGameCreated: true,
       gameId: generatedGameId
@@ -24,18 +24,6 @@ export default class RoomCreation extends React.Component {
       this.createGameRoom();
     });
   }
-
-  // handleCreate(event) {
-  //   console.log('props:', this.props);
-  //   this.setState({
-  //     isGameCreated: true,
-  //     gameId: this.props.gameId
-  //     // gameId: createGameId()
-  //   }, () => {
-  //     this.createGameRoom();
-  //     // this.props.gameId(this.state.gameId);
-  //   });
-  // }
 
   createGameRoom(event) {
     const { gameId } = this.state;
@@ -68,10 +56,8 @@ export default class RoomCreation extends React.Component {
   }
 
   startGame(event) {
-    this.socket.on('start game', data => {
-      console.log('receiving data from server to desktop:', data);
-      window.location.hash = data;
-      // this.state.route.path = '#game';
+    this.socket.on('start game', () => {
+      window.location.hash = '#game';
     });
   }
 
