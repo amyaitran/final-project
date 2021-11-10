@@ -108,6 +108,11 @@ nsDesktop.on('connection', socket => {
     socket.join(`room-${gameId}`);
     nsMobile.to(`room-${gameId}`).emit('random prompts', data);
   });
+
+  socket.on('timer end', () => {
+    socket.join(`room-${gameId}`);
+    nsMobile.to(`room-${gameId}`).emit('timer end');
+  });
 });
 
 const nsMobile = io.of('/mobile');

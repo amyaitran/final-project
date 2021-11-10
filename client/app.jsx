@@ -1,9 +1,10 @@
 import React from 'react';
 import parseRoute from './lib/parse-route';
 import RoomCreation from './components/dt-start';
+import PlayerCreation from './components/mb-start';
 import DesktopGame from './components/dt-play-answer';
 import MobileGame from './components/mb-play-answer';
-import PlayerCreation from './components/mb-start';
+import MobileVoting from './components/mb-play-voting';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -42,6 +43,8 @@ export default class App extends React.Component {
       return <DesktopGame gameId={gameId} updatePrompts={this.updatePrompts.bind(this)} />;
     } else if (route.path === 'play') {
       return <MobileGame gameId={gameId} prompts={prompts} />;
+    } else if (route.path === 'play-vote') {
+      return <MobileVoting gameId={gameId} prompts={prompts} />;
     }
   }
 

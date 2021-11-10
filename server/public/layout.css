@@ -44,6 +44,10 @@
   margin-bottom: 2rem;
 }
 
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
 .ml-15 {
   margin-left: 1.5rem;
 }
@@ -52,10 +56,42 @@
   margin: 0;
 }
 
+.mr-6 {
+  margin-right: 0.6rem;
+}
+
+.mt-0 {
+  margin-top: 0;
+}
+
 .mt-1 {
   margin-top: 1rem;
 }
 
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.mt-6 {
+  margin-top: 6rem;
+}
+
 .line-height-3 {
   line-height: 3rem;
+}
+
+.height-2 {
+  height: 2rem;
+}
+
+.width-8 {
+  width: 8rem;
+}
+
+.width-16 {
+  width: 16rem;
+}
+
+.width-18 {
+  width: 18rem;
 }

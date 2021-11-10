@@ -70,7 +70,7 @@ export default class PlayerCreation extends React.Component {
             </h1>
             <div className="center">
               <a href="#play">
-                <button onClick={this.startGame} className="height-5"><span className="fw-reg">everybody is in!<br/></span>START</button>
+                <button onClick={this.startGame} className="height-5 width-18"><span className="fw-reg">everybody is in!<br/></span>START</button>
               </a>
             </div>
           </>

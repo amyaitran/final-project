@@ -123,7 +123,7 @@ export default class RoomCreation extends React.Component {
               Oft-Topic
             </h1>
             <div className="center">
-              <button onClick={this.handleCreate}>create a new game!</button>
+              <button className="width-16" onClick={this.handleCreate}>create a new game!</button>
             </div>
           </>
     );

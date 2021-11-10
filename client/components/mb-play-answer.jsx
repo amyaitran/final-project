@@ -14,6 +14,15 @@ export default class MobileGame extends React.Component {
     this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.gameId}` });
     this.socket.on('random letter', letter => this.setState({ randomLetter: letter }));
     this.socket.on('random prompts', data => this.setState({ prompts: data }));
+    this.socket.on('timer end', () => {
+      console.log('timer has ended');
+      this.submitAnswers();
+      window.location.hash = '#play-vote';
+    });
+  }
+
+  submitAnswers() {
+    console.log('submitting answers');
   }
 
   componentWillUnmount() {
@@ -26,27 +35,27 @@ export default class MobileGame extends React.Component {
     return (
       this.state.prompts.map(prompt => {
         return (
-      <div key={prompt.promptId} className="note mt-1 padding-1">
-        <h3 className="black margin-0">{prompt.question}</h3>
-        <ul className="purple text-align-left padding-left-15">
-          <li>
-            <input
-            name="firstAnswer"
-            key={prompt.promptId}
-            type="text"
-            className="answer"
-            placeholder="Answer"/>
-          </li>
-          <li>
-            <input
-            name="secondAnswer"
-            key={prompt.promptId}
-            type="text"
-            className="answer"
-            placeholder="Secondary Answer"/>
-          </li>
-        </ul>
-      </div>
+          <div key={prompt.promptId} className="note bg-light-yellow mt-1 padding-1">
+            <h3 className="black margin-0">{prompt.question}</h3>
+            <ul className="purple text-align-left padding-left-15">
+              <li>
+                <input
+                name="firstAnswer"
+                key={prompt.promptId}
+                type="text"
+                className="answer"
+                placeholder="Answer"/>
+              </li>
+              <li>
+                <input
+                name="secondAnswer"
+                key={prompt.promptId}
+                type="text"
+                className="answer"
+                placeholder="Secondary Answer"/>
+              </li>
+            </ul>
+          </div>
         );
       })
     );
