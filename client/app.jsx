@@ -10,7 +10,8 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       route: parseRoute(window.location.hash),
-      gameId: null
+      gameId: null,
+      prompts: []
     };
     this.updateGameId = this.updateGameId.bind(this);
   }
@@ -25,11 +26,14 @@ export default class App extends React.Component {
 
   updateGameId(result) {
     this.setState({ gameId: result });
-    console.log('app state has changed:');
+  }
+
+  updatePrompts(result) {
+    this.setState({ prompts: result });
   }
 
   renderPage() {
-    const { route, gameId } = this.state;
+    const { route, gameId, prompts } = this.state;
     if (route.path === '') {
       return <RoomCreation
         data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } } />;
@@ -37,15 +41,13 @@ export default class App extends React.Component {
       return <PlayerCreation
         data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } }/>;
     } else if (route.path === 'game') {
-      return <DesktopGame data={ { gameId } }/>;
+      return <DesktopGame data={ { gameId, updatePrompts: this.updatePrompts.bind(this) } }/>;
     } else if (route.path === 'play') {
-      return <MobileGame data={ { gameId } }/>;
+      return <MobileGame data={ { gameId, prompts } }/>;
     }
   }
 
   render() {
-    return (
-      this.renderPage()
-    );
+    return (this.renderPage());
   }
 }

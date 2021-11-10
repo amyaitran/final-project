@@ -10,7 +10,6 @@ const { createServer } = require('http');
 const server = createServer(app);
 
 const socketIO = require('socket.io');
-const { Console } = require('console');
 const io = socketIO(server);
 
 const db = new pg.Pool({
@@ -68,6 +67,24 @@ app.post('/api/join-game', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/prompts', (req, res, next) => {
+  const sql = `
+    select *
+    from "prompts"
+    order by random()
+    limit 8;
+    `;
+  db.query(sql)
+    .then(result => {
+      const prompts = result.rows;
+      res.json(prompts);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'An unexpected error occurred.' });
+    });
+});
+
 server.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`server listening on port ${process.env.PORT}`);
@@ -76,24 +93,20 @@ server.listen(process.env.PORT, () => {
 const nsDesktop = io.of('/desktop');
 
 nsDesktop.on('connection', socket => {
-  console.log('new desktop client connected:', socket.id);
   const { gameId } = socket.handshake.query;
 
   socket.on('create room', roomCode => {
-    console.log('room code created:', roomCode);
     socket.join(`room-${roomCode}`);
   });
 
   socket.on('random letter', letter => {
     socket.join(`room-${gameId}`);
-    console.log(`DESKTOPsocket ${socket.id} joined room-${gameId}`);
-    console.log('letter received from dt:', letter);
     nsMobile.to(`room-${gameId}`).emit('random letter', letter);
-    console.log(`sending letter ${letter} to mobilesockets in room-${gameId}`);
   });
 
-  socket.on('disconnect', () => {
-    console.log('desktop client disconnected:', socket.id);
+  socket.on('random prompts', data => {
+    socket.join(`room-${gameId}`);
+    nsMobile.to(`room-${gameId}`).emit('random prompts', data);
   });
 });
 
@@ -101,21 +114,14 @@ const nsMobile = io.of('/mobile');
 
 nsMobile.on('connection', socket => {
   const { gameId } = socket.handshake.query;
-  console.log(`new mobile client connected of ${socket.id} and a handshake gameId of ${gameId}`);
   socket.join(`room-${gameId}`);
-  console.log(`MOBILEsocket ${socket.id} joined room-${gameId}`);
-  // if (gameId) {
-  //   socket.join(`room-${gameId}`);
-  //   console.log(`mobilesocket ${socket.id} joined room-${gameId}`);
-  // }
-
-  const arr = Array.from(nsDesktop.adapter.rooms);
-  const validRooms = [];
-  for (let i = 0; i < arr.length; i++) {
-    validRooms.push(arr[i][0]);
-  }
 
   socket.on('create player', data => {
+    const arr = Array.from(nsDesktop.adapter.rooms);
+    const validRooms = [];
+    for (let i = 0; i < arr.length; i++) {
+      validRooms.push(arr[i][0]);
+    }
     if (validRooms.includes(`room-${gameId}`)) {
       socket.emit('valid id', true);
       nsDesktop.to(`room-${gameId}`).emit('new player', data);
@@ -128,16 +134,4 @@ nsMobile.on('connection', socket => {
     nsDesktop.to(`room-${gameId}`).emit('start game');
     nsMobile.to(`room-${gameId}`).emit('start game');
   });
-
-  socket.on('disconnect', () => {
-    console.log('mobile client disconnected:', socket.id);
-  });
 });
-
-// socket.on('start game', data => {
-//   const { gameId } = data.handshake.query;
-//   console.log('GAMEIDHANDSHAKE:', gameId);
-//   console.log('data received mobile to server:', data);
-//   nsDesktop.to(`room-${gameId}`).emit('start game', data.route);
-//   // nsDesktop.to(`room-${data.gameId}`).emit('start game', data.route);
-// });

@@ -9,20 +9,23 @@ export default class DesktopGame extends React.Component {
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 2
+      timer: 120
     };
   }
 
   componentDidMount() {
     this.setState({ randomLetter: generateRandomLetter() });
     this.startCountdown();
+    this.fetchRandomPrompts();
   }
 
   startCountdown() {
+    this.socket = socketIOClient('/desktop', { query: `gameId=${this.props.data.gameId}` });
     this.countdownID = setInterval(
       () => {
         if (this.state.countdown === 0) {
           clearInterval(this.countdownID);
+          this.socket.emit('random letter', this.state.randomLetter);
           this.startTimer();
         } else {
           this.setState({ countdown: this.state.countdown - 1 });
@@ -31,16 +34,23 @@ export default class DesktopGame extends React.Component {
   }
 
   startTimer() {
-    this.socket = socketIOClient('/desktop', { query: `gameId=${this.props.data.gameId}` });
     this.timerID = setInterval(
       () => {
         if (this.state.timer === 0) {
           clearInterval(this.timerID);
-          this.socket.emit('random letter', this.state.randomLetter);
         } else {
           this.setState({ timer: this.state.timer - 1 });
         }
       }, 1000);
+  }
+
+  fetchRandomPrompts() {
+    fetch('/api/prompts')
+      .then(response => response.json())
+      .then(data => {
+        this.props.data.updatePrompts(data);
+        this.socket.emit('random prompts', data);
+      });
   }
 
   componentWillUnmount() {
