@@ -44,20 +44,6 @@ export default class App extends React.Component {
       return <MobileGame gameId={gameId} prompts={prompts} />;
     }
   }
-  // renderPage() {
-  //   const { route, gameId, prompts } = this.state;
-  //   if (route.path === '') {
-  //     return <RoomCreation
-  //       data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } } />;
-  //   } else if (route.path === 'mobile') {
-  //     return <PlayerCreation
-  //       data={ { gameId: gameId, updateGameId: this.updateGameId.bind(this) } }/>;
-  //   } else if (route.path === 'game') {
-  //     return <DesktopGame data={ { gameId, updatePrompts: this.updatePrompts.bind(this) } }/>;
-  //   } else if (route.path === 'play') {
-  //     return <MobileGame data={ { gameId, prompts } }/>;
-  //   }
-  // }
 
   render() {
     return this.renderPage();
