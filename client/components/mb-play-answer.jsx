@@ -8,6 +8,8 @@ export default class MobileGame extends React.Component {
       prompts: [],
       randomLetter: null
     };
+    this.handleChange1 = this.handleChange1.bind(this);
+    this.handleChange2 = this.handleChange2.bind(this);
   }
 
   componentDidMount() {
@@ -19,6 +21,30 @@ export default class MobileGame extends React.Component {
       this.submitAnswers();
       window.location.hash = '#play-vote';
     });
+  }
+
+  handleChange1(event) {
+    this.setState(prevState => ({
+      prompts: prevState.prompts.map(prompt => {
+        return (
+          (prompt.promptId === parseInt(event.target.id))
+            ? { ...prompt, answer1: event.target.value }
+            : prompt
+        );
+      })
+    }));
+  }
+
+  handleChange2(event) {
+    this.setState(prevState => ({
+      prompts: prevState.prompts.map(prompt => {
+        return (
+          (prompt.promptId === parseInt(event.target.id))
+            ? { ...prompt, answer2: event.target.value }
+            : prompt
+        );
+      })
+    }));
   }
 
   submitAnswers() {
@@ -40,16 +66,18 @@ export default class MobileGame extends React.Component {
             <ul className="purple text-align-left padding-left-15">
               <li>
                 <input
-                name="firstAnswer"
-                key={prompt.promptId}
+                name="answer1"
+                onChange={this.handleChange1}
+                id={prompt.promptId}
                 type="text"
                 className="answer"
                 placeholder="Answer"/>
               </li>
               <li>
                 <input
-                name="secondAnswer"
-                key={prompt.promptId}
+                name="answer2"
+                onChange={this.handleChange2}
+                id={prompt.promptId}
                 type="text"
                 className="answer"
                 placeholder="Secondary Answer"/>

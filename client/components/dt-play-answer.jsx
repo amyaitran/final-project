@@ -9,7 +9,7 @@ export default class DesktopGame extends React.Component {
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 2
+      timer: 300
     };
   }
 

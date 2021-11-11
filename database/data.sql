@@ -70,7 +70,7 @@ values
   ('If Italy were a movie, the title would be ___'),
   ('___ is best after ___'),
   ('Trends you don''t like'),
-  ('Nevert trust'),
+  ('Never trust ___'),
   ('Sports teams'),
   ('Something you need two people to do'),
   ('Things dads are good at'),
