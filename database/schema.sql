@@ -33,9 +33,9 @@ CREATE TABLE "game" (
 
 
 CREATE TABLE "playerAnswers" (
+  "playerId" int NOT NULL,
 	"firstAnswer" TEXT,
 	"secondAnswer" TEXT,
-	"scoredPoint" int,
 	"promptId" int NOT NULL,
 	"gameId" TEXT NOT NULL
 ) WITH (
@@ -69,6 +69,7 @@ ALTER TABLE "players" ADD CONSTRAINT "players_fk0" FOREIGN KEY ("gameId") REFERE
 
 ALTER TABLE "playerAnswers" ADD CONSTRAINT "playerAnswers_fk0" FOREIGN KEY ("promptId") REFERENCES "prompts"("promptId");
 ALTER TABLE "playerAnswers" ADD CONSTRAINT "playerAnswers_fk1" FOREIGN KEY ("gameId") REFERENCES "game"("gameId");
+ALTER TABLE "playerAnswers" ADD CONSTRAINT "playerAnswers_fk2" FOREIGN KEY ("playerId") REFERENCES "players"("playerId");
 
 
 ALTER TABLE "gamePrompts" ADD CONSTRAINT "gamePrompts_fk0" FOREIGN KEY ("promptId") REFERENCES "prompts"("promptId");

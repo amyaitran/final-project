@@ -7,7 +7,8 @@ export default class PlayerCreation extends React.Component {
     this.state = {
       name: null,
       gameId: null,
-      isCodeValid: null
+      isCodeValid: null,
+      isPlayerValid: null
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
@@ -41,13 +42,15 @@ export default class PlayerCreation extends React.Component {
     this.socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
     this.socket.emit('create player', { name });
     this.socket.on('valid id', valid => {
-      if (valid) {
-        this.setState({ isCodeValid: true });
-        this.props.updateGameId(gameId);
-        this.socket.on('start game', () => { window.location.hash = '#play'; });
-      } else {
-        this.setState({ isCodeValid: false });
-      }
+      console.log('mobile setting state of code to boolean');
+      this.setState({ isCodeValid: valid });
+    });
+    this.socket.on('valid name', valid => {
+      console.log('mobile setting state of playervalid to boolean');
+      this.setState({ isPlayerValid: valid });
+      this.props.updateGameId(gameId);
+      // this.props.updatePlayerName(name);
+      this.socket.on('start game', () => { window.location.hash = '#play'; });
     });
   }
 
@@ -63,7 +66,7 @@ export default class PlayerCreation extends React.Component {
 
   render() {
     return (
-      (this.state.isCodeValid)
+      (this.state.isPlayerValid)
         ? <>
             <h1 className="text-align-center">
               Oft-Topic
@@ -96,6 +99,9 @@ export default class PlayerCreation extends React.Component {
                   maxLength="12"
                   required />
                 </div>
+                { (this.state.isPlayerValid === false)
+                  ? <p className="red bg-yellow center">duplicate player name!</p>
+                  : '' }
               </div>
               <div className="ml-15">
                 <div className="col-full">
@@ -115,7 +121,7 @@ export default class PlayerCreation extends React.Component {
                 </div>
                 { (this.state.isCodeValid === false)
                   ? <p className="red bg-yellow center">invalid game code!</p>
-                  : <p className="hidden">invalid game code!</p>}
+                  : '' }
               </div>
               <div className="center">
                 <button className="col-six-tenths shadow">play!</button>

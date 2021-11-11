@@ -17,8 +17,8 @@ export default class MobileGame extends React.Component {
     this.socket.on('random letter', letter => this.setState({ randomLetter: letter }));
     this.socket.on('random prompts', data => this.setState({ prompts: data }));
     this.socket.on('timer end', () => {
-      console.log('timer has ended');
-      this.submitAnswers();
+      // this.socket.emit('submit answers', this.state.prompts);
+      this.props.updatePrompts(this.state.prompts);
       window.location.hash = '#play-vote';
     });
   }
@@ -45,10 +45,6 @@ export default class MobileGame extends React.Component {
         );
       })
     }));
-  }
-
-  submitAnswers() {
-    console.log('submitting answers');
   }
 
   toggleSecondAnswer(promptId) {

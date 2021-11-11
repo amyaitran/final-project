@@ -14,9 +14,7 @@ const io = socketIO(server);
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
 app.use(staticMiddleware);
@@ -113,6 +111,10 @@ nsDesktop.on('connection', socket => {
     socket.join(`room-${gameId}`);
     nsMobile.to(`room-${gameId}`).emit('timer end');
   });
+
+  socket.on('valid name', data => {
+    nsMobile.to(data.socketId).emit('valid name', data.isUniqueName);
+  });
 });
 
 const nsMobile = io.of('/mobile');
@@ -127,16 +129,19 @@ nsMobile.on('connection', socket => {
     for (let i = 0; i < arr.length; i++) {
       validRooms.push(arr[i][0]);
     }
-    if (validRooms.includes(`room-${gameId}`)) {
-      socket.emit('valid id', true);
-      nsDesktop.to(`room-${gameId}`).emit('new player', data);
-    } else {
-      socket.emit('valid id', false);
+    const isCodeValid = validRooms.includes(`room-${gameId}`);
+    socket.emit('valid id', isCodeValid);
+    if (isCodeValid) {
+      nsDesktop.to(`room-${gameId}`).emit('new player', { name: data.name, socketId: socket.id });
     }
   });
 
   socket.on('start game', () => {
     nsDesktop.to(`room-${gameId}`).emit('start game');
     nsMobile.to(`room-${gameId}`).emit('start game');
+  });
+
+  socket.on('submit answers', data => {
+    nsMobile.to(`room-${gameId}`).emit('submit answers', data);
   });
 });
