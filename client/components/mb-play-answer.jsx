@@ -51,6 +51,22 @@ export default class MobileGame extends React.Component {
     console.log('submitting answers');
   }
 
+  toggleSecondAnswer(promptId) {
+    const targetPrompt = this.state.prompts.find(prompt => prompt.promptId === parseInt(promptId));
+    return (
+      targetPrompt.answer1
+        ? <li>
+            <input
+            name="answer2"
+            onChange={this.handleChange2}
+            id={prompt.promptId}
+            type="text"
+            className="answer"
+            placeholder="Secondary Answer"/>
+          </li>
+        : '');
+  }
+
   componentWillUnmount() {
     if (this.socket) {
       this.socket.disconnect();
@@ -73,15 +89,7 @@ export default class MobileGame extends React.Component {
                 className="answer"
                 placeholder="Answer"/>
               </li>
-              <li>
-                <input
-                name="answer2"
-                onChange={this.handleChange2}
-                id={prompt.promptId}
-                type="text"
-                className="answer"
-                placeholder="Secondary Answer"/>
-              </li>
+              {this.toggleSecondAnswer(prompt.promptId)}
             </ul>
           </div>
         );

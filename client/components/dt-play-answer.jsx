@@ -9,7 +9,7 @@ export default class DesktopGame extends React.Component {
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 300
+      timer: 35
     };
   }
 
@@ -51,36 +51,8 @@ export default class DesktopGame extends React.Component {
       .then(data => {
         this.props.updatePrompts();
         this.socket.emit('random prompts', data);
-        data.map(prompt => {
-          return this.postGamePrompts(prompt);
-        });
-        // this.postGamePrompts()
       });
   }
-
-  postGamePrompts(prompt) {
-    const req = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ randomLetter: this.state.randomLetter, promptId: prompt.promptId, gameId: this.props.gameId })
-    };
-    fetch('/api/insert-game-prompts', req)
-      .then(res => res.json())
-      .then(res => console.log('res:', res))
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
-  // fetchRandomPrompts() {
-  //   fetch('/api/prompts')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       this.props.updatePrompts();
-  //       this.socket.emit('random prompts', data);
-  //     });
-  // }
 
   componentWillUnmount() {
     if (this.socket) {

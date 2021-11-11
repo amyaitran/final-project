@@ -129,7 +129,7 @@ values
   ('Things you spend too much money on'),
   ('Go ___ yourself'),
   ('Something you keep hidden'),
-  ('he happiest people in the world like ___'),
+  ('The happiest people in the world like ___'),
   ('Once you go ___ you never go back'),
   ('Words to describe your relationship status'),
   ('Smells you enjoy')

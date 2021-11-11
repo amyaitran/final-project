@@ -67,22 +67,6 @@ app.post('/api/join-game', (req, res, next) => {
     .catch(err => next(err));
 });
 
-app.post('/api/insert-game-prompts', (req, res, next) => {
-  const { randomLetter, promptId, gameId } = req.body;
-  const sql = `
-    insert into "gamePrompts" ("randomLetter", "promptId", "gameId")
-    values ($1, $2, $3)
-    returning *
-    `;
-  const params = [randomLetter, promptId, gameId];
-  db.query(sql, params)
-    .then(result => {
-      const [gamePrompts] = result.rows;
-      res.status(201).json(gamePrompts);
-    })
-    .catch(err => next(err));
-});
-
 app.get('/api/prompts', (req, res, next) => {
   const sql = `
     select *

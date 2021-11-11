@@ -19,7 +19,7 @@ export default class MobileVoting extends React.Component {
         <h3>mark all duplicate answers</h3>
         <div className="note bg-yellow mt-1 padding-1">
 
-          <h3 className="black mt-0 mb-1">original answers</h3>
+          <h3 className="black mt-0 mb-3">original answers</h3>
           <div className="purple handwritten text-align-left">
             <label htmlFor="answerlol">
               <input
@@ -43,7 +43,7 @@ export default class MobileVoting extends React.Component {
         </div>
 
         <div className="note bg-light-yellow mt-1 padding-1">
-          <h3 className="black mt-0 mb-1">duplicate answers</h3>
+          <h3 className="black mt-0 mb-3">duplicate answers</h3>
           <div className="purple handwritten text-align-left">
             <label htmlFor="someanswer">
               <input
