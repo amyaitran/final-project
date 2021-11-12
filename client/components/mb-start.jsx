@@ -42,14 +42,12 @@ export default class PlayerCreation extends React.Component {
     this.socket = socketIOClient('/mobile', { query: `gameId=${gameId}` });
     this.socket.emit('create player', { name });
     this.socket.on('valid id', valid => {
-      console.log('mobile setting state of code to boolean');
       this.setState({ isCodeValid: valid });
     });
     this.socket.on('valid name', valid => {
-      console.log('mobile setting state of playervalid to boolean');
       this.setState({ isPlayerValid: valid });
       this.props.updateGameId(gameId);
-      // this.props.updatePlayerName(name);
+      this.props.updatePlayerName(name);
       this.socket.on('start game', () => { window.location.hash = '#play'; });
     });
   }

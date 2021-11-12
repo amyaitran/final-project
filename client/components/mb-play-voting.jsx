@@ -5,7 +5,9 @@ export default class MobileVoting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      prompts: []
+      prompts: [],
+      uniqueAnswers: [],
+      duplicateAnswers: []
     };
   }
 
@@ -21,25 +23,26 @@ export default class MobileVoting extends React.Component {
   }
 
   renderAnswers() {
-    <div className="note bg-yellow mt-1 padding-1">
-      <h3 className="black mt-0 mb-3">original answers</h3>
-        {this.state.prompts.map(prompt => {
-          return (
-              <div className="purple handwritten text-align-left" key={prompt.promptId}>
-                <label htmlFor="answerlol">
-                  <input
-                    type="checkbox"
-                    className="mr-6"
-                    onChange={this.handleCheck} />
-                  prompt.firstAnswer
-                </label>
-              </div>
-          );
-        })}
-    </div>;
+    this.state.prompts.map(prompt => {
+      return (
+      <div className="purple handwritten text-align-left" key={prompt.promptId}>
+        <label htmlFor="answerlol">
+          <input
+            type="checkbox"
+            className="mr-6"
+            onChange={this.handleCheck} />
+          prompt.firstAnswer
+        </label>
+      </div>
+      );
+    });
   }
 
-  renderOriginals() {
+  renderUniques() {
+
+  }
+
+  renderDuplicates() {
 
   }
 
@@ -47,7 +50,10 @@ export default class MobileVoting extends React.Component {
     return (
       <div className="mb-container center">
         <h3>mark all duplicate answers</h3>
-      {this.renderAnswers}
+        <div className="note bg-yellow mt-1 padding-1">
+          <h3 className="black mt-0 mb-3">original answers</h3>
+
+          { this.renderAnswers() }
         {/* <div className="note bg-yellow mt-1 padding-1">
 
           <h3 className="black mt-0 mb-3">original answers</h3>
@@ -62,6 +68,7 @@ export default class MobileVoting extends React.Component {
           </div>
 
         </div> */}
+        </div>
 
         <div className="note bg-light-yellow mt-1 padding-1">
           <h3 className="black mt-0 mb-3">duplicate answers</h3>

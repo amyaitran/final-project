@@ -83,6 +83,22 @@ app.get('/api/prompts', (req, res, next) => {
     });
 });
 
+app.post('/api/submit-answers', (req, res, next) => {
+  const { gameId, promptId, name, answer1, answer2 } = req.body;
+  const sql = `
+    insert into "playerAnswers" ("gameId", "promptId", "name", "answer1", "answer2")
+    values ($1, $2, $3, $4, $5)
+    returning *
+    `;
+  const params = [gameId, promptId, name, answer1, answer2];
+  db.query(sql, params)
+    .then(result => {
+      const [answers] = result.rows;
+      res.status(201).json(answers);
+    })
+    .catch(err => next(err));
+});
+
 server.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`server listening on port ${process.env.PORT}`);
