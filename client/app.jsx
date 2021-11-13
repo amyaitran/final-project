@@ -14,7 +14,8 @@ export default class App extends React.Component {
       gameId: null,
       playerName: null,
       prompts: [],
-      answers: []
+      answers: [],
+      roundNumber: 0
     };
     this.updateGameId = this.updateGameId.bind(this);
     this.updatePlayerName = this.updatePlayerName.bind(this);
@@ -31,26 +32,27 @@ export default class App extends React.Component {
   }
 
   updateGameId(result) {
-    this.setState({ gameId: result }, () => console.log('app state for gameId:', this.state.gameId));
+    this.setState({ gameId: result });
   }
 
   updatePrompts(result) {
-    this.setState({ prompts: this.state.prompts.concat([result]) }, () => console.log('app state for prompts:', this.state.prompts));
-    // this.setState({ prompts: this.state.prompts.concat(result) });
+    this.setState({ prompts: this.state.prompts.concat(result) });
   }
 
   updatePlayerName(result) {
-    this.setState({ playerName: result }, () => console.log('app state for playerName:', this.state.playerName));
+    this.setState({ playerName: result });
   }
 
   updateAnswers(result) {
-    this.setState({ answers: this.state.answers.concat([result]) }, () => console.log('app state for answers:', this.state.answers));
-    // this.setState({ answers: this.state.answers.concat([result]) });
-    // this.setState({ answers: result });
+    this.setState({ answers: this.state.answers.concat(result) });
+  }
+
+  updateRoundNumber(result) {
+    this.setState({ roundNumber: this.state.roundNumber + 1 });
   }
 
   renderPage() {
-    const { route, gameId, prompts, playerName } = this.state;
+    const { route, gameId, playerName, roundNumber, answers } = this.state;
     if (route.path === '') {
       return <RoomCreation
               gameId={gameId}
@@ -63,17 +65,20 @@ export default class App extends React.Component {
     } else if (route.path === 'game') {
       return <DesktopGame
               gameId={gameId}
+              roundNumber={roundNumber}
+              updateRoundNumber={this.updateRoundNumber.bind(this)}
               updatePrompts={this.updatePrompts.bind(this)} />;
     } else if (route.path === 'play') {
       return <MobileGame
               gameId={gameId}
               playerName={playerName}
+              updateRoundNumber={this.updateRoundNumber.bind(this)}
               updateAnswers={this.updateAnswers.bind(this)} />;
-      // updatePrompts={this.updatePrompts.bind(this)} />;
     } else if (route.path === 'play-vote') {
       return <MobileVoting
               gameId={gameId}
-              prompts={prompts} />;
+              answers={answers}
+              roundNumber={roundNumber} />;
     }
   }
 

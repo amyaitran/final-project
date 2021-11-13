@@ -17,6 +17,8 @@ export default class DesktopGame extends React.Component {
     this.setState({ randomLetter: generateRandomLetter() });
     this.startCountdown();
     this.fetchRandomPrompts();
+    this.props.updateRoundNumber();
+    this.socket.emit('round number', this.props.roundNumber);
   }
 
   startCountdown() {
@@ -49,7 +51,7 @@ export default class DesktopGame extends React.Component {
     fetch('/api/prompts')
       .then(response => response.json())
       .then(data => {
-        this.props.updatePrompts();
+        this.props.updatePrompts(data);
         this.socket.emit('random prompts', data);
       });
   }
@@ -78,17 +80,4 @@ export default class DesktopGame extends React.Component {
           </div>
     );
   }
-  // render() {
-  //   return (
-  //     (this.state.countdown === 0)
-  //       ? <div className="center">
-  //           <h1 className="mb-0">random letter:</h1>
-  //           <h1 className="fs-big margin-0 yellow">{this.state.randomLetter}</h1>
-  //           <h1>{convertTime(this.state.timer)}</h1>
-  //         </div>
-  //       : <div className="center">
-  //           <h1 className="fs-big">{this.state.countdown}</h1>
-  //         </div>
-  //   );
-  // }
 }

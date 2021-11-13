@@ -17,7 +17,6 @@ export default class MobileGame extends React.Component {
     this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.gameId}` });
     this.socket.on('random letter', letter => this.setState({ randomLetter: letter }));
     this.socket.on('random prompts', data => {
-      // this.setState({ prompts: data });
       this.setState({ prompts: data });
       data.map(datum => {
         const placeholderAnswer =
@@ -30,6 +29,7 @@ export default class MobileGame extends React.Component {
         return this.setState({ playerAnswers: this.state.playerAnswers.concat(placeholderAnswer) });
       });
     });
+    this.socket.on('round number', number => this.props.updateRoundNumber());
     this.socket.on('timer end', () => {
       this.props.updateAnswers(this.state.playerAnswers);
       this.state.playerAnswers.map(answer => this.handleSubmitAnswers(answer));
@@ -92,12 +92,6 @@ export default class MobileGame extends React.Component {
         : '');
   }
 
-  componentWillUnmount() {
-    if (this.socket) {
-      this.socket.disconnect();
-    }
-  }
-
   renderCards() {
     return (
       this.state.prompts.map(prompt => {
@@ -120,6 +114,12 @@ export default class MobileGame extends React.Component {
         );
       })
     );
+  }
+
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 
   render() {

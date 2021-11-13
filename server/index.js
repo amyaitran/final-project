@@ -70,7 +70,7 @@ app.get('/api/prompts', (req, res, next) => {
     select *
     from "prompts"
     order by random()
-    limit 8;
+    limit 2;
     `;
   db.query(sql)
     .then(result => {
@@ -99,6 +99,27 @@ app.post('/api/submit-answers', (req, res, next) => {
     .catch(err => next(err));
 });
 
+app.get('/api/get-answers/:gameId/:promptId', (req, res, next) => {
+  const gameId = req.params.gameId;
+  const promptId = req.params.promptId;
+  const sql = `
+    select *
+    from "playerAnswers"
+    where "gameId" = $1 and "promptId" = $2
+    order by random()
+    `;
+  const params = [gameId, promptId];
+  db.query(sql, params)
+    .then(result => {
+      const answers = result.rows;
+      res.json(answers);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'An unexpected error occurred.' });
+    });
+});
+
 server.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`server listening on port ${process.env.PORT}`);
@@ -111,6 +132,10 @@ nsDesktop.on('connection', socket => {
 
   socket.on('create room', roomCode => {
     socket.join(`room-${roomCode}`);
+  });
+
+  socket.on('valid name', data => {
+    nsMobile.to(data.socketId).emit('valid name', data.isUniqueName);
   });
 
   socket.on('random letter', letter => {
@@ -128,9 +153,10 @@ nsDesktop.on('connection', socket => {
     nsMobile.to(`room-${gameId}`).emit('timer end');
   });
 
-  socket.on('valid name', data => {
-    nsMobile.to(data.socketId).emit('valid name', data.isUniqueName);
+  socket.on('round number', number => {
+    nsMobile.to(`room-${gameId}`).emit('round number', number);
   });
+
 });
 
 const nsMobile = io.of('/mobile');
@@ -159,5 +185,9 @@ nsMobile.on('connection', socket => {
 
   socket.on('submit answers', data => {
     nsMobile.to(`room-${gameId}`).emit('submit answers', data);
+  });
+
+  socket.on('unique answers', data => {
+    nsDesktop.to(`room-${gameId}`).emit('unique answers');
   });
 });
