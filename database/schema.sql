@@ -33,9 +33,9 @@ CREATE TABLE "game" (
 
 
 CREATE TABLE "playerAnswers" (
-	"firstAnswer" TEXT,
-	"secondAnswer" TEXT,
-	"scoredPoint" int NOT NULL,
+  "name" TEXT NOT NULL,
+	"answer1" TEXT,
+	"answer2" TEXT,
 	"promptId" int NOT NULL,
 	"gameId" TEXT NOT NULL
 ) WITH (

@@ -14,9 +14,7 @@ const io = socketIO(server);
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
 app.use(staticMiddleware);
@@ -72,12 +70,49 @@ app.get('/api/prompts', (req, res, next) => {
     select *
     from "prompts"
     order by random()
-    limit 8;
+    limit 2;
     `;
   db.query(sql)
     .then(result => {
       const prompts = result.rows;
       res.json(prompts);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'An unexpected error occurred.' });
+    });
+});
+
+app.post('/api/submit-answers', (req, res, next) => {
+  const { gameId, promptId, name, answer1, answer2 } = req.body;
+  const sql = `
+    insert into "playerAnswers" ("gameId", "promptId", "name", "answer1", "answer2")
+    values ($1, $2, $3, $4, $5)
+    returning *
+    `;
+  const params = [gameId, promptId, name, answer1, answer2];
+  db.query(sql, params)
+    .then(result => {
+      const [answers] = result.rows;
+      res.status(201).json(answers);
+    })
+    .catch(err => next(err));
+});
+
+app.get('/api/get-answers/:gameId/:promptId', (req, res, next) => {
+  const gameId = req.params.gameId;
+  const promptId = req.params.promptId;
+  const sql = `
+    select *
+    from "playerAnswers"
+    where "gameId" = $1 and "promptId" = $2
+    order by random()
+    `;
+  const params = [gameId, promptId];
+  db.query(sql, params)
+    .then(result => {
+      const answers = result.rows;
+      res.json(answers);
     })
     .catch(err => {
       console.error(err);
@@ -99,6 +134,10 @@ nsDesktop.on('connection', socket => {
     socket.join(`room-${roomCode}`);
   });
 
+  socket.on('valid name', data => {
+    nsMobile.to(data.socketId).emit('valid name', data.isUniqueName);
+  });
+
   socket.on('random letter', letter => {
     socket.join(`room-${gameId}`);
     nsMobile.to(`room-${gameId}`).emit('random letter', letter);
@@ -108,6 +147,16 @@ nsDesktop.on('connection', socket => {
     socket.join(`room-${gameId}`);
     nsMobile.to(`room-${gameId}`).emit('random prompts', data);
   });
+
+  socket.on('timer end', () => {
+    socket.join(`room-${gameId}`);
+    nsMobile.to(`room-${gameId}`).emit('timer end');
+  });
+
+  socket.on('round number', number => {
+    nsMobile.to(`room-${gameId}`).emit('round number', number);
+  });
+
 });
 
 const nsMobile = io.of('/mobile');
@@ -122,16 +171,23 @@ nsMobile.on('connection', socket => {
     for (let i = 0; i < arr.length; i++) {
       validRooms.push(arr[i][0]);
     }
-    if (validRooms.includes(`room-${gameId}`)) {
-      socket.emit('valid id', true);
-      nsDesktop.to(`room-${gameId}`).emit('new player', data);
-    } else {
-      socket.emit('valid id', false);
+    const isCodeValid = validRooms.includes(`room-${gameId}`);
+    socket.emit('valid id', isCodeValid);
+    if (isCodeValid) {
+      nsDesktop.to(`room-${gameId}`).emit('new player', { name: data.name, socketId: socket.id });
     }
   });
 
   socket.on('start game', () => {
     nsDesktop.to(`room-${gameId}`).emit('start game');
     nsMobile.to(`room-${gameId}`).emit('start game');
+  });
+
+  socket.on('submit answers', data => {
+    nsMobile.to(`room-${gameId}`).emit('submit answers', data);
+  });
+
+  socket.on('unique answers', data => {
+    nsDesktop.to(`room-${gameId}`).emit('unique answers');
   });
 });

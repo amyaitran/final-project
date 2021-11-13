@@ -50,7 +50,11 @@ export default class RoomCreation extends React.Component {
   addNewPlayer(event) {
     this.socket.on('new player', data => {
       if (this.state.players.length < 8) {
-        this.setState({ players: this.state.players.concat([data.name]) });
+        const isUniqueName = !(this.state.players.includes(data.name));
+        this.socket.emit('valid name', { isUniqueName: isUniqueName, socketId: data.socketId });
+        if (isUniqueName) {
+          this.setState({ players: this.state.players.concat([data.name]) });
+        }
       }
     });
   }
@@ -123,7 +127,7 @@ export default class RoomCreation extends React.Component {
               Oft-Topic
             </h1>
             <div className="center">
-              <button onClick={this.handleCreate}>create a new game!</button>
+              <button className="width-16" onClick={this.handleCreate}>create a new game!</button>
             </div>
           </>
     );

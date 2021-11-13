@@ -9,7 +9,7 @@ export default class DesktopGame extends React.Component {
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 120
+      timer: 10
     };
   }
 
@@ -17,6 +17,8 @@ export default class DesktopGame extends React.Component {
     this.setState({ randomLetter: generateRandomLetter() });
     this.startCountdown();
     this.fetchRandomPrompts();
+    this.props.updateRoundNumber();
+    this.socket.emit('round number', this.props.roundNumber);
   }
 
   startCountdown() {
@@ -38,6 +40,7 @@ export default class DesktopGame extends React.Component {
       () => {
         if (this.state.timer === 0) {
           clearInterval(this.timerID);
+          this.socket.emit('timer end');
         } else {
           this.setState({ timer: this.state.timer - 1 });
         }
@@ -48,7 +51,7 @@ export default class DesktopGame extends React.Component {
     fetch('/api/prompts')
       .then(response => response.json())
       .then(data => {
-        this.props.updatePrompts();
+        this.props.updatePrompts(data);
         this.socket.emit('random prompts', data);
       });
   }
@@ -62,11 +65,16 @@ export default class DesktopGame extends React.Component {
   render() {
     return (
       (this.state.countdown === 0)
-        ? <div className="center">
-            <h1 className="mb-0">random letter:</h1>
-            <h1 className="fs-big margin-0 yellow">{this.state.randomLetter}</h1>
-            <h1>{convertTime(this.state.timer)}</h1>
-          </div>
+        ? (this.state.timer === 0)
+            ? <div className="center mt-6">
+              <h1>only <span className="yellow">unique</span> answers <br/>are allowed</h1>
+              <h2>please identify duplicate answers</h2>
+            </div>
+            : <div className="center">
+              <h1 className="mb-0">random letter:</h1>
+              <h1 className="fs-big margin-0 yellow">{this.state.randomLetter}</h1>
+              <h1>{convertTime(this.state.timer)}</h1>
+            </div>
         : <div className="center">
             <h1 className="fs-big">{this.state.countdown}</h1>
           </div>
