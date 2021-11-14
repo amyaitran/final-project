@@ -9,8 +9,7 @@ export default class MobileGame extends React.Component {
       randomLetter: null,
       playerAnswers: []
     };
-    this.handleChange1 = this.handleChange1.bind(this);
-    this.handleChange2 = this.handleChange2.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -52,24 +51,12 @@ export default class MobileGame extends React.Component {
       });
   }
 
-  handleChange1(event) {
+  handleChange(event) {
     this.setState(prevState => ({
       playerAnswers: prevState.playerAnswers.map(answer => {
         return (
           answer.promptId === parseInt(event.target.id)
-            ? { ...answer, answer1: event.target.value }
-            : answer
-        );
-      })
-    }));
-  }
-
-  handleChange2(event) {
-    this.setState(prevState => ({
-      playerAnswers: prevState.playerAnswers.map(answer => {
-        return (
-          answer.promptId === parseInt(event.target.id)
-            ? { ...answer, answer2: event.target.value }
+            ? { ...answer, [event.target.name]: event.target.value }
             : answer
         );
       })
@@ -83,7 +70,7 @@ export default class MobileGame extends React.Component {
         ? <li>
             <input
             name="answer2"
-            onChange={this.handleChange2}
+            onChange={this.handleChange}
             id={targetAnswer.promptId}
             type="text"
             className="answer"
@@ -102,7 +89,7 @@ export default class MobileGame extends React.Component {
               <li>
                 <input
                 name="answer1"
-                onChange={this.handleChange1}
+                onChange={this.handleChange}
                 id={prompt.promptId}
                 type="text"
                 className="answer"

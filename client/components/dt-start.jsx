@@ -82,7 +82,7 @@ export default class RoomCreation extends React.Component {
               </h2>
             </div>
             <div className="center row">
-              <div className="dt-container">
+              <div className="dt-container width-600px">
                 <h2 className="black fs-med margin-0">Waiting for players...</h2>
                 <div className="row">
                   <div className="col-half text-align-left">

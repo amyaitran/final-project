@@ -83,7 +83,6 @@ button:active {
   box-shadow: 2px 6px 0 0 rgb(0 0 0 / 25%);
   border-radius: 0.8rem;
   padding: 1.2rem;
-  width: 600px;
 }
 
 .mb-container {
@@ -102,6 +101,14 @@ button:active {
 
 .bg-yellow {
   background-color: yellow;
+}
+
+.bg-green {
+  background-color: rgb(199 238 199);
+}
+
+.bg-red {
+  background-color: rgb(243 211 211);
 }
 
 .note {
@@ -123,6 +130,10 @@ button:active {
 
 .red {
   color: red;
+}
+
+.green {
+  color: green;
 }
 
 .tan {
@@ -167,4 +178,12 @@ button:active {
 
 .style-none {
   list-style: none;
+}
+
+.vote-btn {
+  width: 170px;
+  margin: 1.4rem auto;
+  height: 4rem;
+  border-radius: 0.8rem;
+  box-shadow: 2px 6px 0 0 rgb(0 0 0 / 25%);
 }

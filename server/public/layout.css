@@ -6,6 +6,14 @@
   width: 100%;
 }
 
+.col-one-fifth {
+  width: 20%;
+}
+
+.col-three-fifths {
+  width: 60%;
+}
+
 .col-six-tenths {
   width: 60%;
 }
@@ -53,7 +61,7 @@
 }
 
 .margin-0 {
-  margin: 0;
+  margin: 0 auto;
 }
 
 .mr-6 {
@@ -82,6 +90,14 @@
 
 .height-2 {
   height: 2rem;
+}
+
+.width-400px {
+  width: 400px;
+}
+
+.width-600px {
+  width: 600px;
 }
 
 .width-8 {
