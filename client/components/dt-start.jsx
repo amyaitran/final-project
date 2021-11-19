@@ -61,6 +61,7 @@ export default class RoomCreation extends React.Component {
 
   startGame(event) {
     this.socket.on('start game', () => {
+      this.props.updateNumberOfPlayers(this.state.players.length);
       window.location.hash = '#game';
     });
   }

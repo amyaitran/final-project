@@ -1,7 +1,7 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
 
-export default class MobileGame extends React.Component {
+export default class MobileAnswer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +32,7 @@ export default class MobileGame extends React.Component {
     this.socket.on('timer end', () => {
       this.props.updateAnswers(this.state.playerAnswers);
       this.state.playerAnswers.map(answer => this.handleSubmitAnswers(answer));
-      window.location.hash = '#play-vote';
+      window.location.hash = '#play-disqualify';
     });
   }
 

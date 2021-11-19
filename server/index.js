@@ -106,7 +106,6 @@ app.get('/api/get-answers/:gameId/:promptId', (req, res, next) => {
     select *
     from "playerAnswers"
     where "gameId" = $1 and "promptId" = $2
-    order by random()
     `;
   const params = [gameId, promptId];
   db.query(sql, params)
@@ -157,6 +156,10 @@ nsDesktop.on('connection', socket => {
     nsMobile.to(`room-${gameId}`).emit('round number', number);
   });
 
+  socket.on('start voting', () => {
+    nsMobile.to(`room-${gameId}`).emit('start voting');
+  });
+
 });
 
 const nsMobile = io.of('/mobile');
@@ -188,6 +191,6 @@ nsMobile.on('connection', socket => {
   });
 
   socket.on('unique answers', data => {
-    nsDesktop.to(`room-${gameId}`).emit('unique answers');
+    nsDesktop.to(`room-${gameId}`).emit('unique answers', data);
   });
 });

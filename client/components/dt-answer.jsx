@@ -3,13 +3,15 @@ import socketIOClient from 'socket.io-client';
 import generateRandomLetter from '../lib/generate-random-letter';
 import convertTime from '../lib/convert-time';
 
-export default class DesktopGame extends React.Component {
+export default class DesktopAnswer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 30
+      timer: 60,
+      playersSubmitted: 0,
+      originalAnswers: []
     };
   }
 
@@ -19,6 +21,7 @@ export default class DesktopGame extends React.Component {
     this.fetchRandomPrompts();
     this.props.updateRoundNumber();
     this.socket.emit('round number', this.props.roundNumber);
+    this.receiveUniqueAnswers();
   }
 
   startCountdown() {
@@ -54,6 +57,42 @@ export default class DesktopGame extends React.Component {
         this.props.updatePrompts(data);
         this.socket.emit('random prompts', data);
       });
+  }
+
+  receiveUniqueAnswers() {
+    const submittedAnswers = [];
+
+    this.socket.on('unique answers', answers => {
+      console.log('dt-answer receiving data:', answers);
+      submittedAnswers.push(answers);
+      this.setState({ playersSubmitted: this.state.playersSubmitted + 1 });
+      console.log('submittedAnswers:', submittedAnswers);
+      if (this.state.playersSubmitted === this.props.numberOfPlayers) {
+        console.log('all players submitted');
+        // let originalAnswers = []
+
+        // const originalAnswers = submittedAnswers.flat().map(answer => {
+        //   if (submittedAnswers.flat().filter(ans => (ans === answer)).length > (this.props.numberOfPlayers / 2)) {
+        //   // originalAnswers.push(answer)
+        //     return answer;
+        //   }
+        // });
+        // console.log('original answers:', originalAnswers);
+        // window.location.hash = '#play-vote';
+
+        const originalAnswers = submittedAnswers.flat().map(answer => {
+          // submittedAnswers;
+          if (submittedAnswers.flat().reduce((count, ans) => (ans === answer ? count + 1 : count), 0) > (this.props.numberOfPlayers / 2)) {
+          // originalAnswers.push(answer)
+            return answer;
+          }
+        });
+        console.log('original answers:', originalAnswers);
+        window.location.hash = 'game-vote';
+
+      }
+    });
+
   }
 
   componentWillUnmount() {
