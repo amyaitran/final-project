@@ -44,10 +44,7 @@ Try the application live!
 - Players can have the option to restart the game
 
 ## Preview
-![Lyrics Quizzer-demo1](https://user-images.githubusercontent.com/30616230/142551115-3bfae50d-496e-43cf-9974-c7f4d7b66f2a.gif)
-
-![Lyrics Quizzer-demo2](https://user-images.githubusercontent.com/30616230/142551845-eec49dda-0327-4bee-a642-523be493cd31.gif)
-
+![ot-readme1](https://user-images.githubusercontent.com/30616230/149430653-28f7f913-d75f-49d8-80fe-39c5ae202983.gif)
 
 ## Development
 
