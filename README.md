@@ -4,7 +4,7 @@ A full stack application for friends who want to play a virtual adaptation of th
 
 ## Why I Built This Project
 
-I
+I love playing party games with friends. One of my favorite games to play is Jackbox games and this project was heavily inspired by it.
 
 ## Technologies Used
 
