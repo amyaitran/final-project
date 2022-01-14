@@ -44,7 +44,7 @@ Try the application live!
 - Players can have the option to restart the game
 
 ## Preview
-![ot-readme1](https://user-images.githubusercontent.com/30616230/149430653-28f7f913-d75f-49d8-80fe-39c5ae202983.gif)
+![ot-readme2](https://user-images.githubusercontent.com/30616230/149431995-06195626-e20e-4968-a12c-aa68163d172a.gif)
 
 ## Development
 
