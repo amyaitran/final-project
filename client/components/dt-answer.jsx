@@ -3,13 +3,15 @@ import socketIOClient from 'socket.io-client';
 import generateRandomLetter from '../lib/generate-random-letter';
 import convertTime from '../lib/convert-time';
 
-export default class DesktopGame extends React.Component {
+export default class DesktopAnswer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 10
+      timer: 20,
+      playersSubmitted: 0,
+      originalAnswers: []
     };
   }
 
@@ -19,6 +21,7 @@ export default class DesktopGame extends React.Component {
     this.fetchRandomPrompts();
     this.props.updateRoundNumber();
     this.socket.emit('round number', this.props.roundNumber);
+    this.receiveUniqueAnswers();
   }
 
   startCountdown() {
@@ -54,6 +57,25 @@ export default class DesktopGame extends React.Component {
         this.props.updatePrompts(data);
         this.socket.emit('random prompts', data);
       });
+  }
+
+  receiveUniqueAnswers() {
+    const submittedAnswers = [];
+
+    this.socket.on('unique answers', answers => {
+      submittedAnswers.push(answers);
+      this.setState({ playersSubmitted: this.state.playersSubmitted + 1 });
+      if (this.state.playersSubmitted === this.props.numberOfPlayers) {
+        const originalAnswers = submittedAnswers.flat().map(answer => {
+          if (submittedAnswers.flat().reduce((count, ans) => (ans === answer ? count + 1 : count), 0) > (this.props.numberOfPlayers / 2)) {
+            return answer;
+          } else return null;
+        });
+        this.props.updateAnswers(originalAnswers);
+        window.location.hash = 'game-vote';
+      }
+    });
+
   }
 
   componentWillUnmount() {

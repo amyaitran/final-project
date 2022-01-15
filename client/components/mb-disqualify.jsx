@@ -1,21 +1,25 @@
 import React from 'react';
 import socketIOClient from 'socket.io-client';
 
-export default class MobileVoting extends React.Component {
+export default class MobileDisqualify extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      submitted: false,
       playerAnswers: [],
-      duplicateAnswers: []
+      duplicateAnswers: [],
+      originalAnswers: []
     };
     this.renderAnswers = this.renderAnswers.bind(this);
     this.renderDuplicates = this.renderDuplicates.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
+    this.submitUniqueAnswers = this.submitUniqueAnswers.bind(this);
   }
 
   componentDidMount() {
+    this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.gameId}` });
     const arrayOfPromptIds = this.props.answers.map(answer => answer.promptId);
-    const currentRoundPromptId = arrayOfPromptIds[this.props.roundNumber];
+    const currentRoundPromptId = arrayOfPromptIds.sort()[this.props.roundNumber];
     fetch(`/api/get-answers/${this.props.gameId}/${currentRoundPromptId}`)
       .then(response => response.json())
       .then(data => {
@@ -35,6 +39,9 @@ export default class MobileVoting extends React.Component {
           }).flat()
         });
       });
+    this.socket.on('start voting', () => {
+      window.location.hash = '#play-vote';
+    });
   }
 
   handleCheck(event) {
@@ -82,6 +89,7 @@ export default class MobileVoting extends React.Component {
           <label htmlFor={`${answer.promptId}-${answer.name}-${answerNumber}`}>
             <input
               type="checkbox"
+              checked="checked"
               className="mr-6"
               id={`${answer.promptId}-${answer.name}-${answerNumber}`}
               onChange={this.handleCheck} />
@@ -94,26 +102,34 @@ export default class MobileVoting extends React.Component {
   }
 
   submitUniqueAnswers() {
-    this.socket = socketIOClient('/mobile', { query: `gameId=${this.props.gameId}` });
-    this.socket.emit('unique answers', this.state.duplicateAnswers);
+    this.socket.emit('unique answers', this.state.playerAnswers);
+    this.setState({ submitted: true });
+  }
+
+  componentWillUnmount() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
   }
 
   render() {
     return (
-      <div className="mb-container center">
-        <h3>mark all duplicate answers</h3>
-        <div className="note bg-yellow mt-1 padding-1">
-          <h3 className="black mt-0 mb-3">original answers</h3>
-          { this.renderAnswers() }
-        </div>
+      this.state.submitted === true
+        ? <h3 className="center purple fs-med">submitted!</h3>
+        : <div className="mb-container center">
+            <h3>mark all duplicate answers</h3>
+            <div className="note bg-yellow mt-1 padding-1">
+              <h3 className="black mt-0 mb-3">original answers</h3>
+              { this.renderAnswers() }
+            </div>
 
-        <div className="note bg-light-yellow mt-1 padding-1">
-          <h3 className="black mt-0 mb-3">duplicate answers</h3>
-          { this.renderDuplicates() }
-        </div>
+            <div className="note bg-light-yellow mt-1 padding-1">
+              <h3 className="black mt-0 mb-3">duplicate answers</h3>
+              { this.renderDuplicates() }
+            </div>
 
-        <button onClick={this.submitUniqueAnswers} className="fs-reg mt-2 width-8 height-2">submit!</button>
-      </div>
+            <button onClick={this.submitUniqueAnswers} className="fs-reg mt-2 width-8 height-2">submit!</button>
+          </div>
     );
   }
 }
