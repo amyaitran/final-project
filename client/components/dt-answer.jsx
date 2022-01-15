@@ -9,7 +9,7 @@ export default class DesktopAnswer extends React.Component {
     this.state = {
       randomLetter: null,
       countdown: 3,
-      timer: 60,
+      timer: 20,
       playersSubmitted: 0,
       originalAnswers: []
     };
@@ -63,33 +63,16 @@ export default class DesktopAnswer extends React.Component {
     const submittedAnswers = [];
 
     this.socket.on('unique answers', answers => {
-      console.log('dt-answer receiving data:', answers);
       submittedAnswers.push(answers);
       this.setState({ playersSubmitted: this.state.playersSubmitted + 1 });
-      console.log('submittedAnswers:', submittedAnswers);
       if (this.state.playersSubmitted === this.props.numberOfPlayers) {
-        console.log('all players submitted');
-        // let originalAnswers = []
-
-        // const originalAnswers = submittedAnswers.flat().map(answer => {
-        //   if (submittedAnswers.flat().filter(ans => (ans === answer)).length > (this.props.numberOfPlayers / 2)) {
-        //   // originalAnswers.push(answer)
-        //     return answer;
-        //   }
-        // });
-        // console.log('original answers:', originalAnswers);
-        // window.location.hash = '#play-vote';
-
         const originalAnswers = submittedAnswers.flat().map(answer => {
-          // submittedAnswers;
           if (submittedAnswers.flat().reduce((count, ans) => (ans === answer ? count + 1 : count), 0) > (this.props.numberOfPlayers / 2)) {
-          // originalAnswers.push(answer)
             return answer;
-          }
+          } else return null;
         });
-        console.log('original answers:', originalAnswers);
+        this.props.updateAnswers(originalAnswers);
         window.location.hash = 'game-vote';
-
       }
     });
 

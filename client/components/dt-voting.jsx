@@ -13,12 +13,6 @@ export default class DesktopVoting extends React.Component {
   componentDidMount() {
     this.socket = socketIOClient('/desktop', { query: `gameId=${this.props.gameId}` });
     this.socket.emit('start voting');
-    // const submittedAnswers = [];
-    // this.socket.on('unique answers', answers => {
-    //   this.setState({ playersSubmitted: this.state.playersSubmitted + 1 });
-    //   submittedAnswers.concat(answers);
-    //   console.log('submittedAnswers:', submittedAnswers);
-    // });
   }
 
   componentWillUnmount() {
