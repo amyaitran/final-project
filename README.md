@@ -1,6 +1,8 @@
 # Oft-Topic
 
 A full stack application for friends who want to play a virtual adaptation of the party game “Off Topic”.
+Desktop link: https://oft-topic.herokuapp.com/
+Mobile link: https://oft-topic.herokuapp.com/#mobile
 
 ## Why I Built This Project
 
