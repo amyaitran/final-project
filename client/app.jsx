@@ -1,12 +1,12 @@
 import React from 'react';
 import parseRoute from './lib/parse-route';
-import RoomCreation from './components/dt-start';
-import PlayerCreation from './components/mb-start';
-import DesktopAnswer from './components/dt-answer';
-import MobileAnswer from './components/mb-answer';
-import MobileDisqualify from './components/mb-disqualify';
-import DesktopVoting from './components/dt-voting';
-import MobileVoting from './components/mb-voting';
+import RoomCreation from './pages/desktop/start';
+import PlayerCreation from './pages/mobile/start';
+import DesktopAnswer from './pages/desktop/answer';
+import MobileAnswer from './pages/mobile/answer';
+import MobileDisqualify from './pages/mobile/disqualify';
+import DesktopVoting from './pages/desktop/voting';
+import MobileVoting from './pages/mobile/voting';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -36,27 +36,27 @@ export default class App extends React.Component {
   }
 
   updateGameId(result) {
-    this.setState({ gameId: result }, () => console.log('app state for gameId:', this.state.gameId));
+    this.setState({ gameId: result });
   }
 
   updateNumberOfPlayers(result) {
-    this.setState({ numberOfPlayers: result }, () => console.log('app state for numberOfPlayers:', this.state.numberOfPlayers));
+    this.setState({ numberOfPlayers: result });
   }
 
   updatePrompts(result) {
-    this.setState({ prompts: this.state.prompts.concat(result) }, () => console.log('app state for prompts:', this.state.prompts));
+    this.setState({ prompts: this.state.prompts.concat(result) });
   }
 
   updatePlayerName(result) {
-    this.setState({ playerName: result }, () => console.log('app state for playerName:', this.state.playerName));
+    this.setState({ playerName: result });
   }
 
   updateAnswers(result) {
-    this.setState({ answers: this.state.answers.concat(result) }, () => console.log('app state for answers:', this.state.answers));
+    this.setState({ answers: this.state.answers.concat(result) });
   }
 
   updateRoundNumber(result) {
-    this.setState({ roundNumber: this.state.roundNumber + 1 }, () => console.log('app state for roundNumber:', this.state.roundNumber));
+    this.setState({ roundNumber: this.state.roundNumber + 1 });
   }
 
   renderPage() {
